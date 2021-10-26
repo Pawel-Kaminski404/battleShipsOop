@@ -2,7 +2,7 @@
 {
     public class PlayerShoot : IShootStrategy
     {
-        public void Shoot()
+        public void Shoot(Board board)
         {
             //dupa
         }

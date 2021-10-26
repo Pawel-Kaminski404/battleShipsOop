@@ -2,8 +2,6 @@
 {
     public interface IShootStrategy
     {
-        void Shoot()
-        {
-        }
+        void Shoot(Board board);
     }
 }

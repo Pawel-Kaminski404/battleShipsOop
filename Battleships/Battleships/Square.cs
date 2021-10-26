@@ -5,9 +5,9 @@ namespace Battleships
 {
     public class Square
     {
-        private Coordinates Position { get; }
+        public Coordinates Position { get; }
         
-        public Enum SquareStatus { get; }
+        public Enum SquareStatus { get; set; }
 
         public Square(int x, int y)
         {
@@ -40,6 +40,8 @@ namespace Battleships
         Empty,
         Ship,
         Hit,
-        Missed
+        Missed,
+        Sunk,
+        Cursor
     }
 }

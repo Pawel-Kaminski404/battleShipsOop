@@ -9,6 +9,7 @@ namespace Battleships.UserInterface
     {
         public void PrintMenu(ref int pointer, string playerOne, string playerTwo)
         {
+            Console.Clear();
             Console.WriteLine(" -- BattleShips Schleswig-Holstein Edition-- ");
             Console.WriteLine(pointer == 0 ? "> Start <" : "  Start  ");
             Console.Write(pointer == 1 ? "> Player 1 < " : "  Player 1   ");
@@ -36,26 +37,24 @@ namespace Battleships.UserInterface
 
         public void PrintBoard(Board board, Cursor cursor)
         {
+            Console.Clear();
             Console.WriteLine();
             PrintBoardHeader(board.Size);
             for (int row = 0; row < board.Size; row++)
             {
-                PrintGameBoardRow(board, row, false, cursor);
-                PrintGameBoardRow(board, row, true, cursor);
-                PrintGameBoardRow(board, row, false, cursor);
+                PrintGameBoardRow(board, row, cursor, false, 1);
+                PrintGameBoardRow(board, row, cursor, true, 2);
+                PrintGameBoardRow(board, row, cursor, false, 3);
                 PrintHorizontalSeparator();
-                Console.WriteLine();
             }
             PrintHorizontalSeparator();
-            
         }
 
         private void PrintBoardHeader(int boardSize)
         {
             PrintHorizontalSeparator();
-            Console.WriteLine();
-            Console.Write(GetIndent(8));
-            PrintVerticalSeparator(1);
+            Console.Write(GetIndent(CellWidth + 1));
+            PrintVerticalSeparator();
             Console.BackgroundColor = _colors["boardSeparatorColor"];
             Console.ForegroundColor = _colors["borderForegroundColor"];
             for (int i = 0; i < boardSize; i++)
@@ -66,7 +65,7 @@ namespace Battleships.UserInterface
                 Console.Write(GetIndent(3));
             }
 
-            PrintVerticalSeparator(3);
+            PrintVerticalSeparator(4);
             Console.WriteLine();
 
 
@@ -74,11 +73,12 @@ namespace Battleships.UserInterface
 
         private void PrintHorizontalSeparator()
         {
-            const int boardWidth = 94;
-            Console.Write(GetIndent(8));
+            const int boardWidth = 96;
+            Console.Write(GetIndent(CellWidth + 1));
             Console.BackgroundColor = _colors["boardSeparatorColor"];
             Console.Write(GetIndent(boardWidth));
             Console.BackgroundColor = _colors["mainBackgroundColor"];
+            Console.WriteLine();
         }
 
         private void PrintVerticalSeparator(int multiplier = 2)
@@ -88,19 +88,19 @@ namespace Battleships.UserInterface
             Console.BackgroundColor = _colors["mainBackgroundColor"];
         }
 
-        private void PrintGameBoardRow(Board board, int row, bool isRowCountNeeded, Cursor cursor)
+        private void PrintGameBoardRow(Board board, int row, Cursor cursor, bool isRowCountNeeded, int printRowNum)
         {
-            Console.Write(GetIndent(8));
+            Console.Write(GetIndent(CellWidth + 1));
             Console.BackgroundColor = _colors["boardSeparatorColor"];
             Console.ForegroundColor = _colors["borderForegroundColor"];
             if (isRowCountNeeded)
             {
-                string rowCountString = row < board.Size-1 ? $" {row + 1} " : $"{row + 1} ";
+                string rowCountString = row < board.Size-1 ? $"  {row + 1} " : $" {row + 1} ";
                 Console.Write(rowCountString);    
             }
             else
             {
-                Console.Write(GetIndent(3));
+                Console.Write(GetIndent(4));
             }
             for (int col = 0; col < board.Size; col++)
             {
@@ -138,8 +138,42 @@ namespace Battleships.UserInterface
                 }
                 PrintVerticalSeparator();
             }
-            PrintVerticalSeparator(1);
+            PrintVerticalSeparator();
+            if (row is 3 or 4 or 5)
+            {
+                PrintGameInfo(row, printRowNum);
+            }
             Console.WriteLine();
+        }
+
+        private void PrintGameInfo(int row, int printRowNum)
+        {
+            Console.Write(GetIndent(20));
+            Console.ForegroundColor = ConsoleColor.White;
+            switch (row, printRowNum)
+            {
+                case (3, 2):
+                    Console.Write("Player 1 turn");
+                    break;
+                case (4, 1):
+                    Console.Write("Player 1 left ships:");
+                    break;
+                case (4, 2):
+                    Console.Write("Carrier: 1  Cruiser: 1  Battleship: 1");
+                    break;
+                case (4, 3):
+                    Console.Write("Submarine: 1  Destroyer: 1");
+                    break;
+                case (5, 1):
+                    Console.Write("Player 2 left ships:");
+                    break;
+                case (5, 2):
+                    Console.Write("Carrier: 1  Cruiser: 1  Battleship: 1");
+                    break;
+                case (5, 3):
+                    Console.Write("Submarine: 1  Destroyer: 1");
+                    break;
+            }
         }
         
         private string GetIndent(int multiplier)

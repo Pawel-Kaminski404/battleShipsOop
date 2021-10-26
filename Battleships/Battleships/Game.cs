@@ -1,4 +1,5 @@
 ﻿using Battleships.Players;
+using Battleships.UserInterface;
 
 namespace Battleships
 {
@@ -14,8 +15,12 @@ namespace Battleships
             PlayerTwo = playerTwo;
         }
 
-        public void Play()
+        public void Play(Display display, Input input)
         {
+            var board = new Board();
+            var cursor = new Cursor();
+            //display.PrintBoard(board, cursor);
+            input.SelectPosition(display, board, cursor);
 
         }
 

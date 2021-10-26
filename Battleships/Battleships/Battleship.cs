@@ -14,27 +14,21 @@ namespace Battleships
         public void Run()
         {
             var gameMode = new GameMode();
-            (string, string) strategies = gameMode.SetGameMode(display, input);
-            var game = new Game(CreatePlayer(strategies.Item1), CreatePlayer(strategies.Item2));
-            game.Play();
+            var (player1, player2) = gameMode.SetGameMode(display, input);
+            var game = new Game(CreatePlayer(player1), CreatePlayer(player2));
+            game.Play(display, input);
         }
 
         private Player CreatePlayer(string strategy)
         {
-            switch (strategy)
+            return strategy switch
             {
-                case "Player":
-                    return new Player(new PlayerShoot());
-                case "Easy AI":
-                    return new Player(new EasyAIShoot());
-                case "Normal AI":
-                    return new Player(new NormalAIShoot());
-                case "Hard AI":
-                    return new Player(new HardAIShoot());
-                default:
-                    return new Player(new PlayerShoot());
-                    break;
-            }
+                "Player" => new Player(new PlayerShoot()),
+                "Easy AI" => new Player(new EasyAIShoot()),
+                "Normal AI" => new Player(new NormalAIShoot()),
+                "Hard AI" => new Player(new HardAIShoot()),
+                _ => new Player(new PlayerShoot())
+            };
         }
     }
 }

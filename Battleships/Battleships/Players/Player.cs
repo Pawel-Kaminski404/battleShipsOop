@@ -15,21 +15,20 @@ namespace Battleships.Players
 
         public void ChangeShootStrategy()
         {
-            if (iShootStrategy is PlayerShoot)
+            switch (iShootStrategy)
             {
-                iShootStrategy = new EasyAIShoot();
-            }
-            else if (iShootStrategy is EasyAIShoot)
-            {
-                iShootStrategy = new NormalAIShoot();
-            }
-            else if (iShootStrategy is NormalAIShoot)
-            {
-                iShootStrategy = new HardAIShoot();
-            }
-            else if (iShootStrategy is HardAIShoot)
-            {
-                iShootStrategy = new PlayerShoot();
+                case PlayerShoot:
+                    iShootStrategy = new EasyAIShoot();
+                    break;
+                case EasyAIShoot:
+                    iShootStrategy = new NormalAIShoot();
+                    break;
+                case NormalAIShoot:
+                    iShootStrategy = new HardAIShoot();
+                    break;
+                case HardAIShoot:
+                    iShootStrategy = new PlayerShoot();
+                    break;
             }
         }
 

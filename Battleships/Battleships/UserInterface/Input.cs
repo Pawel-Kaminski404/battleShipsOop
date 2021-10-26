@@ -7,12 +7,10 @@ namespace Battleships.UserInterface
     {
         public int SelectMenuOption(Display display, ref int pointer, string playerOne, string playerTwo)
         {
-            ConsoleKey key;
             while (true)
             {
-                Console.Clear();
                 display.PrintMenu(ref pointer, playerOne, playerTwo);
-                key = Console.ReadKey().Key;
+                var key = Console.ReadKey().Key;
                 switch (key)
                 {
                     case ConsoleKey.UpArrow:
@@ -35,37 +33,35 @@ namespace Battleships.UserInterface
 
         public Coordinates SelectPosition(Display display, Board board, Cursor cursor)
         {
-            ConsoleKeyInfo _Key;
             while (true)
             {
-                Console.Clear();
                 display.PrintBoard(board, cursor);
-                _Key = Console.ReadKey();
-                switch (_Key.Key)
+                var pressedKey = Console.ReadKey().Key;
+                switch (pressedKey)
                 {
                     case ConsoleKey.RightArrow:
-                        if (cursor.Position.X + 1 < 10)
+                        if (cursor.Position.Y + 1 < board.Size)
                         {
                             cursor.MoveRight();
                         }
-
+                        
                         break;
                     case ConsoleKey.LeftArrow:
-                        if (cursor.Position.X - 1 >= 0)
+                        if (cursor.Position.Y - 1 >= 0)
                         {
                             cursor.MoveLeft();
                         }
 
                         break;
                     case ConsoleKey.UpArrow:
-                        if (cursor.Position.Y - 1 >= 0)
+                        if (cursor.Position.X - 1 >= 0)
                         {
                             cursor.MoveUp();
                         }
 
                         break;
                     case ConsoleKey.DownArrow:
-                        if (cursor.Position.Y + 1 < 10)
+                        if (cursor.Position.X + 1 < board.Size)
                         {
                             cursor.MoveDown();
                         }

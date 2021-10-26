@@ -21,7 +21,7 @@ namespace Battleships
 
     public enum ShipType
     {
-        Carrier,
+        Carrier = 2,
         Cruiser,
         Battleship,
         Submarine,

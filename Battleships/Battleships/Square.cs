@@ -5,14 +5,14 @@ namespace Battleships
 {
     public class Square
     {
-        private (int, int) Position { get; }
+        private Coordinates Position { get; }
         
-        public Enum SquareStatus { get; }
+        public Enum SquareStatus { get; set; }
 
         public Square(int x, int y)
         {
             SquareStatus = SquareStatuses.Empty;
-            Position = (x, y);
+            Position = new Coordinates(x, y);
         }
 
         public char GetCharacter()
@@ -33,7 +33,6 @@ namespace Battleships
             {"hit", 'H'},
             {"missed", 'M'}
         };
-
     }
 
     public enum SquareStatuses

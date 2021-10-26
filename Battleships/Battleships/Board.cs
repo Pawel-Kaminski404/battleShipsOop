@@ -4,7 +4,7 @@
     {
         public Square[,] Ocean { get; }
         
-        private const int BoardSize = 10;
+        public const int BoardSize = 10;
 
         public Board()
         {

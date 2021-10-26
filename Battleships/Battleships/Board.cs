@@ -3,20 +3,19 @@
     public class Board
     {
         public Square[,] Ocean { get; }
-        
-        public const int BoardSize = 10;
+        public int Size = 10;
 
         public Board()
         {
-            Ocean = new Square[BoardSize, BoardSize];
+            Ocean = new Square[Size, Size];
             PopulateOcean();
         }
 
         private void PopulateOcean()
         {
-            for (int i = 0; i < BoardSize; i++)
+            for (int i = 0; i < Size; i++)
             {
-                for (int j = 0; j < BoardSize; j++)
+                for (int j = 0; j < Size; j++)
                 {
                     Ocean[i, j] = new Square(i, j);
                 }

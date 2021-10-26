@@ -7,7 +7,7 @@ namespace Battleships
         public void Shoot(Board board)
         {
             Random random = new Random(); 
-            var boardSize = Board.BoardSize;
+            var boardSize = board.Size;
             while (true) {
                 var firstCoordinate = random.Next(0, boardSize);
                 var secondCoordinate = random.Next(0, boardSize);

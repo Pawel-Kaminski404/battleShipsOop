@@ -13,7 +13,7 @@ namespace Battleships
             PlayerOne = playerOne;
             PlayerTwo = playerTwo;
         }
-        
+
         public void Play()
         {
 
@@ -30,6 +30,11 @@ namespace Battleships
             {
                 boardFactory.RandomPlacement(player, board);
             }
+        }
+
+        public bool CheckIfGameEnds(Player player)
+        {
+            return player.Ships.Count == 0;
         }
     }
 }

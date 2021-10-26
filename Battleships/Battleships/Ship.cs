@@ -1,18 +1,15 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 
 namespace Battleships
 {
     public class Ship
     {
+        public List<Square> OccupiedFields { get; set; }
 
-        public enum ShipTypes
+        public Ship()
         {
-            Carrier,
-            Cruiser,
-            Battleship,
-            Submarine,
-            Destroyer
+            OccupiedFields = new List<Square>();
         }
-        
     }
 }

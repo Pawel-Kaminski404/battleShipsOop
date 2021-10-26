@@ -1,7 +1,11 @@
-﻿namespace Battleships
+﻿using System;
+
+namespace Battleships
 {
-    public class HardAIShoot
+    public class HardAIShoot : IShootStrategy
     {
-        
+        public void Shoot()
+        {          
+        }
     }
 }

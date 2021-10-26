@@ -1,7 +1,11 @@
 ﻿namespace Battleships
 {
-    public class EasyAIShoot
+    public class EasyAiShoot : IShootStrategy
     {
-        
+        public void Shoot()
+        {
+            
+        }
+
     }
 }

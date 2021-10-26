@@ -4,26 +4,26 @@ namespace Battleships
 {
     public class EasyAiShoot : IShootStrategy
     {
-        public void Shoot()
+        public void Shoot(Board board)
         {
             Random random = new Random(); 
             var boardSize = Board.BoardSize;
             while (true) {
                 var firstCoordinate = random.Next(0, boardSize);
                 var secondCoordinate = random.Next(0, boardSize);
-                Square square = new Square(firstCoordinate, secondCoordinate);
-                if (square.SquareStatus.ToString() == "Empty")
+                var positionTarget = board.Ocean[firstCoordinate, secondCoordinate];
+                if (positionTarget.SquareStatus.ToString() == "Empty")
                 {
-                    square.SquareStatus = square.SquareStatuses.Missed;
+                    positionTarget.SquareStatus = SquareStatuses.Missed;
+                    break;
                 }
-                else if (square.SquareStatus.ToString() == "Ship")
+                if (positionTarget.SquareStatus.ToString() == "Ship")
                 {
-                    square.SquareStatus = square.SquareStatuses.Hit;
+                    positionTarget.SquareStatus = SquareStatuses.Hit;
+                    break;
                 }
             }
-
-
-
+            
         }
-}
+    }
 }

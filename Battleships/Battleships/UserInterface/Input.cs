@@ -32,5 +32,48 @@ namespace Battleships.UserInterface
                 }
             }
         }
+
+        public Coordinates SelectPosition(Display display, Board board, Cursor cursor)
+        {
+            ConsoleKeyInfo _Key;
+            while (true)
+            {
+                Console.Clear();
+                display.PrintBoard(board, cursor);
+                _Key = Console.ReadKey();
+                switch (_Key.Key)
+                {
+                    case ConsoleKey.RightArrow:
+                        if (cursor.Position.X + 1 < 10)
+                        {
+                            cursor.MoveRight();
+                        }
+
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        if (cursor.Position.X - 1 >= 0)
+                        {
+                            cursor.MoveLeft();
+                        }
+
+                        break;
+                    case ConsoleKey.UpArrow:
+                        if (cursor.Position.Y - 1 >= 0)
+                        {
+                            cursor.MoveUp();
+                        }
+
+                        break;
+                    case ConsoleKey.DownArrow:
+                        if (cursor.Position.Y + 1 < 10)
+                        {
+                            cursor.MoveDown();
+                        }
+                        break;
+                    case ConsoleKey.Enter:
+                        return new Coordinates(cursor.Position.X, cursor.Position.Y);
+                }
+            }
+        }
     }
 }

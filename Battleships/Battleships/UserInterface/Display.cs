@@ -1,13 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using Battleships.Players;
 
-namespace Battleships
+namespace Battleships.UserInterface
 {
     public class Display
     {
-        private Dictionary<string, ConsoleColor> _colors = new()
+        public void PrintMenu(ref int pointer, string playerOne, string playerTwo)
+        {
+            Console.WriteLine(" -- BattleShips Schleswig-Holstein Edition-- ");
+            Console.WriteLine(pointer == 0 ? "> Start <" : "  Start  ");
+            Console.Write(pointer == 1 ? "> Player 1 < " : "  Player 1   ");
+            Console.WriteLine(playerOne);
+            Console.Write(pointer == 2 ? "> Player 2 < " : "  Player 2   ");
+            Console.WriteLine(playerTwo);
+            Console.WriteLine(pointer == 3 ? "> Exit <" : "  Exit  ");
+        }
+
+        private readonly Dictionary<string, ConsoleColor> _colors = new()
         {
             {"mainBackgroundColor", ConsoleColor.Black},
             {"boardEmptyCellColor", ConsoleColor.White},

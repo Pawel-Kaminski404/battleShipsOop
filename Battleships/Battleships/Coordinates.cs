@@ -11,5 +11,10 @@
             this.X = x;
             this.Y = y;
         }
+
+        public override string ToString()
+        {
+            return $"Coordinates X={X} Y={Y}";
+        }
     }
 }

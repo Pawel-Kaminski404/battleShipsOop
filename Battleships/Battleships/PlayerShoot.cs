@@ -1,7 +1,11 @@
-﻿namespace Battleships
+﻿using System;
+
+namespace Battleships
 {
-    public class PlayerShoot
+    public class PlayerShoot : IShootStrategy
     {
-        
+        public void Shoot()
+        {
+        }
     }
 }

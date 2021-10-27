@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Battleships.Players;
 
@@ -23,15 +22,12 @@ namespace Battleships
             };
         }
 
-        public bool TrySinkingShip(Player enemy)
+        public void TrySinkingShip(Player enemy)
         {
             if (CheckIfShipDestroyed())
             {
                 SunkShip(enemy);
-                return true;
             }
-
-            return false;
         }
 
         private bool CheckIfShipDestroyed()

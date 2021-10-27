@@ -17,6 +17,19 @@ namespace Battleships
             var (player1, player2) = gameMode.SetGameMode(display, input);
             var game = new Game(CreatePlayer(player1), CreatePlayer(player2));
             game.Play(display, input);
+
+            //test ustawiania
+            //Cursor cursor = new Cursor();
+            //var board = new Board();
+            //var player = new Player(new PlayerShoot());
+            //while (true)
+            //{
+            //    for (int i = 2; i < 6; i++)
+            //    {
+            //        input.PlaceShip(display, board, player, i);
+
+            //    }
+            //}
         }
 
         private Player CreatePlayer(string strategy)

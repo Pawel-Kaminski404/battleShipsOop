@@ -70,7 +70,7 @@ namespace Battleships
                 {
                     for (int i = 0; i < shipSize - 1; i++)
                     {
-                        if (cordX - i >= 0 && cordX - i < 10)
+                        if (cordX - i >= 0 && cordX - i < board.Size)
                         {
                             if (!IsEmpty(cordX - i, cordY, board)
                                 || !CheckIfShipsAround(cordX - i, cordY, board, direction, i))
@@ -86,7 +86,7 @@ namespace Battleships
 
                 for (int i = 0; i < shipSize - 1; i++)
                 {
-                    if (cordY - i >= 0 && cordY - i < 10)
+                    if (cordY - i >= 0 && cordY - i < board.Size)
                     {
                         if (!IsEmpty(cordX, cordY + i, board)
                             || CheckIfShipsAround(cordX, cordY + i, board, direction, i))

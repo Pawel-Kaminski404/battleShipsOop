@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Battleships.UserInterface;
 
@@ -8,7 +9,16 @@ namespace Battleships.Players
     {
         private IShootStrategy _aiShootStrategy;
 
-        public bool TryShooting(Coordinates shotCords, Board enemyBoard)
+        public string Name { get; set; }
+        public List<Ship> Ships { get; set; } = new ();
+
+        public Player(string name, IShootStrategy strategy = null)
+        {
+            Name = name;
+            _aiShootStrategy = strategy;
+        }
+
+        public bool TryShooting(Coordinates shotCords, Board enemyBoard, Player enemy)
         {
             var targetSquare = enemyBoard.Ocean[shotCords.X, shotCords.Y];
             if (targetSquare.SquareStatus is SquareStatuses.Empty)
@@ -19,10 +29,10 @@ namespace Battleships.Players
             if (targetSquare.SquareStatus is SquareStatuses.Ship)
             {
                 targetSquare.SquareStatus = SquareStatuses.Hit;
-                //CheckIfShipDestroyed(enemyBoard, targetSquare);
-                return true;
+                var enemyShip = enemy.Ships.Find(ship => ship.OccupiedFields.Contains(targetSquare));
+                if (enemyShip != null) enemyShip.TrySinkingShip(enemy);
+                return false;
             }
-
             return false;
         }
 
@@ -30,15 +40,7 @@ namespace Battleships.Players
         {
             return _aiShootStrategy.GetShotCoordinates(board);
         }
-        public string Name { get; set; }
-        public List<Ship> Ships { get; set; } = new ();
-
-        public Player(string name, IShootStrategy strategy = null)
-        {
-            Name = name;
-            _aiShootStrategy = strategy;
-        }
-
+        
         public Dictionary<ShipTypes, int> GetShipCount()
         {
             Dictionary<ShipTypes, int> shipCount = new()

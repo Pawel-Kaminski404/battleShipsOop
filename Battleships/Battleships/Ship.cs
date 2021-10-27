@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Battleships.Players;
 
 namespace Battleships
 {
@@ -20,6 +21,37 @@ namespace Battleships
                 5 => ShipTypes.Submarine,
                 6 => ShipTypes.Destroyer,
             };
+        }
+
+        public bool TrySinkingShip(Player enemy)
+        {
+            if (CheckIfShipDestroyed())
+            {
+                SunkShip(enemy);
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool CheckIfShipDestroyed()
+        {
+            foreach (var square in OccupiedFields)
+            {
+                if (square.SquareStatus == SquareStatuses.Ship)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        private void SunkShip(Player enemy)
+        {
+            foreach (var square in OccupiedFields)
+            {
+                square.SquareStatus = SquareStatuses.Sunk;
+            }
+            enemy.Ships.Remove(this);
         }
     }
     

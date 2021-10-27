@@ -208,6 +208,13 @@ namespace Battleships.UserInterface
             }
         }
 
+        public void PrintGameResult(Player winner)
+        {
+            //to do
+            Console.Clear();
+            Console.WriteLine($"{winner.Name} won!");
+            Console.ReadKey();
+        }
         private string GetIndent(int multiplier)
         {
             const string indent = " ";

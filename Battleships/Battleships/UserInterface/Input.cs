@@ -80,7 +80,7 @@ namespace Battleships.UserInterface
             for (int i = 0; i < shipSize; i++)
             {
                 board.Ocean[0, i].SquareStatus = SquareStatuses.Ship;
-                cordsList.Add(new Coordinates(i, 0));
+                cordsList.Add(new Coordinates(0, i));
             }
 
             ConsoleKeyInfo _Key;
@@ -91,7 +91,7 @@ namespace Battleships.UserInterface
                 {
                     foreach (var square in ship.OccupiedFields)
                     {
-                        board.Ocean[square.Position.Y, square.Position.X].SquareStatus = SquareStatuses.Ship;
+                        board.Ocean[square.Position.X, square.Position.Y].SquareStatus = SquareStatuses.Ship;
                     }
                 }
                 
@@ -104,31 +104,17 @@ namespace Battleships.UserInterface
                         outOfRange = false;
                         foreach (var item in cordsList)
                         {
-                            if (item.X + 1 >= 10)
+                            if (item.Y + 1 >= 10)
                             {
                                 outOfRange = true;
                             }
                         }
                         if (!outOfRange)
                         {
-                            MoveShip(board, cordsList, 1, 0);
+                            MoveShip(board, cordsList, 0, 1);
                         }
                         break;
                     case ConsoleKey.LeftArrow:
-                        outOfRange = false;
-                        foreach (var item in cordsList)
-                        {
-                            if (item.X - 1 < 0)
-                            {
-                                outOfRange = true;
-                            }
-                        }
-                        if (!outOfRange)
-                        {
-                            MoveShip(board, cordsList, -1, 0);
-                        }
-                        break;
-                    case ConsoleKey.UpArrow:
                         outOfRange = false;
                         foreach (var item in cordsList)
                         {
@@ -142,18 +128,32 @@ namespace Battleships.UserInterface
                             MoveShip(board, cordsList, 0, -1);
                         }
                         break;
-                    case ConsoleKey.DownArrow:
+                    case ConsoleKey.UpArrow:
                         outOfRange = false;
                         foreach (var item in cordsList)
                         {
-                            if (item.Y + 1 >= 10)
+                            if (item.X - 1 < 0)
                             {
                                 outOfRange = true;
                             }
                         }
                         if (!outOfRange)
                         {
-                            MoveShip(board, cordsList, 0, 1);
+                            MoveShip(board, cordsList, -1, 0);
+                        }
+                        break;
+                    case ConsoleKey.DownArrow:
+                        outOfRange = false;
+                        foreach (var item in cordsList)
+                        {
+                            if (item.X + 1 >= 10)
+                            {
+                                outOfRange = true;
+                            }
+                        }
+                        if (!outOfRange)
+                        {
+                            MoveShip(board, cordsList, 1, 0);
                         }
                         break;
                     case ConsoleKey.R:
@@ -173,28 +173,6 @@ namespace Battleships.UserInterface
             int range = cordsList.Count;
             if (directionHorizontal)
             {
-                if (cordsList[0].Y + cordsList.Count - 1 < 10)
-                {
-                    for (int i = 1; i < range; i++)
-                    {
-                        toRemove2.Add(cordsList[i]);
-                        toAdd2.Add(new Coordinates(cordsList[0].X, cordsList[0].Y + i));
-                    }
-                    foreach (var item in toRemove2)
-                    {
-                        board.Ocean[item.Y, item.X].SquareStatus = SquareStatuses.Empty;
-                        cordsList.Remove(item);
-                    }
-                    foreach (var item in toAdd2)
-                    {
-                        board.Ocean[item.Y, item.X].SquareStatus = SquareStatuses.Ship;
-                        cordsList.Add(item);
-                    }
-                    directionHorizontal = !directionHorizontal;
-                }
-            }
-            else
-            {
                 if (cordsList[0].X + cordsList.Count - 1 < 10)
                 {
                     for (int i = 1; i < range; i++)
@@ -204,12 +182,34 @@ namespace Battleships.UserInterface
                     }
                     foreach (var item in toRemove2)
                     {
-                        board.Ocean[item.Y, item.X].SquareStatus = SquareStatuses.Empty;
+                        board.Ocean[item.X, item.Y].SquareStatus = SquareStatuses.Empty;
                         cordsList.Remove(item);
                     }
                     foreach (var item in toAdd2)
                     {
-                        board.Ocean[item.Y, item.X].SquareStatus = SquareStatuses.Ship;
+                        board.Ocean[item.X, item.Y].SquareStatus = SquareStatuses.Ship;
+                        cordsList.Add(item);
+                    }
+                    directionHorizontal = !directionHorizontal;
+                }
+            }
+            else
+            {
+                if (cordsList[0].Y + cordsList.Count - 1 < 10)
+                {
+                    for (int i = 1; i < range; i++)
+                    {
+                        toRemove2.Add(cordsList[i]);
+                        toAdd2.Add(new Coordinates(cordsList[0].X, cordsList[0].Y + i));
+                    }
+                    foreach (var item in toRemove2)
+                    {
+                        board.Ocean[item.X, item.Y].SquareStatus = SquareStatuses.Empty;
+                        cordsList.Remove(item);
+                    }
+                    foreach (var item in toAdd2)
+                    {
+                        board.Ocean[item.X, item.Y].SquareStatus = SquareStatuses.Ship;
                         cordsList.Add(item);
                     }
                     directionHorizontal = !directionHorizontal;
@@ -239,7 +239,7 @@ namespace Battleships.UserInterface
             List<Coordinates> allNeighbours = GetAllNeighbours(cordsList);
             foreach (var neighbour in allNeighbours)
             {
-                if (board.Ocean[neighbour.Y, neighbour.X].SquareStatus == SquareStatuses.Ship)
+                if (board.Ocean[neighbour.X, neighbour.Y].SquareStatus == SquareStatuses.Ship)
                 {
                     canBePlaced = false;
                     break;
@@ -271,12 +271,12 @@ namespace Battleships.UserInterface
             }
             foreach (var item in toRemove)
             {
-                board.Ocean[item.Y, item.X].SquareStatus = SquareStatuses.Empty;
+                board.Ocean[item.X, item.Y].SquareStatus = SquareStatuses.Empty;
                 cordsList.Remove(item);
             }
             foreach (var item in toAdd)
             {
-                board.Ocean[item.Y, item.X].SquareStatus = SquareStatuses.Ship;
+                board.Ocean[item.X, item.Y].SquareStatus = SquareStatuses.Ship;
                 cordsList.Add(item);
             }
         }
@@ -286,32 +286,32 @@ namespace Battleships.UserInterface
             List<(int, int)> allNeighbours = new List<(int, int)>();
             foreach (var pos in cords)
             {
-                if (pos.Y - 1 >= 0)
-                {
-                    allNeighbours.Add((pos.Y - 1, pos.X));
-                }
                 if (pos.X - 1 >= 0)
                 {
-                    allNeighbours.Add((pos.Y, pos.X - 1));
+                    allNeighbours.Add((pos.X - 1, pos.Y));
                 }
-                if (pos.Y + 1 < 10)
+                if (pos.Y - 1 >= 0)
                 {
-                    allNeighbours.Add((pos.Y + 1, pos.X));
+                    allNeighbours.Add((pos.X, pos.Y - 1));
                 }
                 if (pos.X + 1 < 10)
                 {
-                    allNeighbours.Add((pos.Y, pos.X + 1));
+                    allNeighbours.Add((pos.X + 1, pos.Y));
+                }
+                if (pos.Y + 1 < 10)
+                {
+                    allNeighbours.Add((pos.X, pos.Y + 1));
                 }
             }
             foreach (var pos in cords)
             {
-                allNeighbours.RemoveAll(tup => tup.Item1 == pos.Y && tup.Item2 == pos.X);
+                allNeighbours.RemoveAll(tup => tup.Item1 == pos.X && tup.Item2 == pos.Y);
             }
 
             List<Coordinates> output = new List<Coordinates>();
             foreach (var item in allNeighbours)
             {
-                output.Add(new Coordinates(item.Item2, item.Item1));
+                output.Add(new Coordinates(item.Item1, item.Item2));
             }
 
             return output;

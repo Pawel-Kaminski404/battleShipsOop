@@ -1,6 +1,5 @@
 ﻿using System;
 using Battleships.UserInterface;
-using Battleships.Players;
 
 namespace Battleships
 {
@@ -15,8 +14,6 @@ namespace Battleships
             bool rulesAreSet = false;
             while (!rulesAreSet)
             {
-                Console.Clear();
-                //display.PrintMenu(ref _pointer, playerOneStrategy, playerTwoStrategy);
                 option = input.SelectMenuOption(display, ref _pointer, playerOneStrategy, playerTwoStrategy);
                 switch (option)
                 {

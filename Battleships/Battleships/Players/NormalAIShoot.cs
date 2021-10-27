@@ -1,13 +1,11 @@
 ﻿namespace Battleships.Players
 {
-    public class NormalAIShoot : IShootStrategy
+    public class NormalAiShoot : IShootStrategy
     {
-        public void Shoot(Board board)
+        public Coordinates GetShotCoordinates(Board board)
         {
-        }
-        public override string ToString()
-        {
-            return "Normal AI";
+            //to do
+            return new Coordinates(1, 2);
         }
     }
 }

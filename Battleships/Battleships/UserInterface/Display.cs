@@ -35,16 +35,16 @@ namespace Battleships.UserInterface
 
         private const int CellWidth = 7;
 
-        public void PrintBoard(Board board, Cursor cursor)
+        public void PrintBoard(Board board, Cursor cursor, Player currentPlayer, Player enemyPlayer)
         {
             Console.Clear();
             Console.WriteLine();
             PrintBoardHeader(board.Size);
             for (int row = 0; row < board.Size; row++)
             {
-                PrintGameBoardRow(board, row, cursor, false, 1);
-                PrintGameBoardRow(board, row, cursor, true, 2);
-                PrintGameBoardRow(board, row, cursor, false, 3);
+                PrintGameBoardRow(board, row, cursor, false, 1, currentPlayer, enemyPlayer);
+                PrintGameBoardRow(board, row, cursor, true, 2, currentPlayer, enemyPlayer);
+                PrintGameBoardRow(board, row, cursor, false, 3, currentPlayer, enemyPlayer);
                 PrintHorizontalSeparator();
             }
             PrintHorizontalSeparator();
@@ -88,7 +88,7 @@ namespace Battleships.UserInterface
             Console.BackgroundColor = _colors["mainBackgroundColor"];
         }
 
-        private void PrintGameBoardRow(Board board, int row, Cursor cursor, bool isRowCountNeeded, int printRowNum)
+        private void PrintGameBoardRow(Board board, int row, Cursor cursor, bool isRowCountNeeded, int printRowNum, Player currentPlayer, Player enemyPlayer)
         {
             Console.Write(GetIndent(CellWidth + 1));
             Console.BackgroundColor = _colors["boardSeparatorColor"];
@@ -141,41 +141,43 @@ namespace Battleships.UserInterface
             PrintVerticalSeparator();
             if (row is 3 or 4 or 5)
             {
-                PrintGameInfo(row, printRowNum);
+                PrintGameInfo(row, printRowNum, currentPlayer, enemyPlayer);
             }
             Console.WriteLine();
         }
 
-        private void PrintGameInfo(int row, int printRowNum)
+        private void PrintGameInfo(int row, int printRowNum, Player currentPlayer, Player enemyPlayer)
         {
             Console.Write(GetIndent(20));
             Console.ForegroundColor = ConsoleColor.White;
+            Dictionary<ShipTypes, int> currentPlayerShipCount = currentPlayer.GetShipCount();
+            Dictionary<ShipTypes, int> enemyPlayerShipCount = enemyPlayer.GetShipCount();
             switch (row, printRowNum)
             {
                 case (3, 2):
-                    Console.Write("Player 1 turn");
+                    Console.Write($"{currentPlayer.Name} turn");
                     break;
                 case (4, 1):
-                    Console.Write("Player 1 left ships:");
+                    Console.Write("Your ships:");
                     break;
                 case (4, 2):
-                    Console.Write("Carrier: 1  Cruiser: 1  Battleship: 1");
+                    Console.Write($"Carrier: {currentPlayerShipCount[ShipTypes.Carrier]}  Cruiser: {currentPlayerShipCount[ShipTypes.Cruiser]}  Battleship: {currentPlayerShipCount[ShipTypes.Battleship]}");
                     break;
                 case (4, 3):
-                    Console.Write("Submarine: 1  Destroyer: 1");
+                    Console.Write($"Submarine: {currentPlayerShipCount[ShipTypes.Submarine]}  Destroyer: {currentPlayerShipCount[ShipTypes.Destroyer]}");
                     break;
                 case (5, 1):
-                    Console.Write("Player 2 left ships:");
+                    Console.Write($"{enemyPlayer.Name} left ships:");
                     break;
                 case (5, 2):
-                    Console.Write("Carrier: 1  Cruiser: 1  Battleship: 1");
+                    Console.Write($"Carrier: {enemyPlayerShipCount[ShipTypes.Carrier]}  Cruiser: {enemyPlayerShipCount[ShipTypes.Cruiser]}  Battleship: {enemyPlayerShipCount[ShipTypes.Battleship]}");
                     break;
                 case (5, 3):
-                    Console.Write("Submarine: 1  Destroyer: 1");
+                    Console.Write($"Submarine: {enemyPlayerShipCount[ShipTypes.Submarine]}  Destroyer: {enemyPlayerShipCount[ShipTypes.Destroyer]}");
                     break;
             }
         }
-        
+
         private string GetIndent(int multiplier)
         {
             const string indent = " ";

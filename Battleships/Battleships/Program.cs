@@ -1,5 +1,4 @@
 ﻿using System;
-using Battleships.UserInterface;
 
 namespace Battleships
 {
@@ -7,7 +6,6 @@ namespace Battleships
     {
         static void Main()
         {
-            Console.CursorVisible = false;
             var battleship = new Battleship();
             battleship.Run();
         }

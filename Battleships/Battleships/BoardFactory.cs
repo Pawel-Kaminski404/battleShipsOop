@@ -6,7 +6,7 @@ namespace Battleships
     {
 
 
-        public void ManualPlacement(Player player, Board board)
+        public void ManualPlacement(Board board)
         {
             //Not implemented
         }
@@ -15,16 +15,5 @@ namespace Battleships
         {
             //Not implemented
         }
-    }
-
-    
-
-    public enum ShipType
-    {
-        Carrier = 2,
-        Cruiser,
-        Battleship,
-        Submarine,
-        Destroyer
     }
 }

@@ -9,7 +9,7 @@ namespace Battleships
         public List<Square> OccupiedFields { get; }
         
         public ShipTypes ShipType { get; }
-
+        
         public Ship(int shipSize)
         {
             OccupiedFields = new List<Square>();
@@ -54,7 +54,6 @@ namespace Battleships
             enemy.Ships.Remove(this);
         }
     }
-    
     public enum ShipTypes
     {
         Carrier = 2,

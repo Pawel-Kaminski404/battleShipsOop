@@ -36,7 +36,7 @@ namespace Battleships.UserInterface
         {
             while (true)
             {
-                display.PrintBoard(board, cursor, currentPlayer, enemyPlayer);
+                display.PrintBoard(board, currentPlayer, cursor, enemyPlayer);
                 var pressedKey = Console.ReadKey().Key;
                 switch (pressedKey)
                 {
@@ -94,9 +94,8 @@ namespace Battleships.UserInterface
                         board.Ocean[square.Position.Y, square.Position.X].SquareStatus = SquareStatuses.Ship;
                     }
                 }
-
-                Console.Clear();
-                display.PrintBoard(board, new Cursor());
+                
+                display.PrintBoard(board, player);
                 _Key = Console.ReadKey();
                 bool outOfRange;
                 switch (_Key.Key)
@@ -161,7 +160,7 @@ namespace Battleships.UserInterface
                         directionHorizontal = TryToRotateShip(board, directionHorizontal, cordsList);
                         break;
                     case ConsoleKey.Enter:
-                        placementDone = TryToPlaceShip(board, player, cordsList, placementDone);
+                        placementDone = TryToPlaceShip(board, player, cordsList, placementDone, shipSize);
                         break;
                 }
             }
@@ -220,7 +219,7 @@ namespace Battleships.UserInterface
             return directionHorizontal;
         }
 
-        private bool TryToPlaceShip(Board board, Player player, List<Coordinates> cordsList, bool placementDone)
+        private bool TryToPlaceShip(Board board, Player player, List<Coordinates> cordsList, bool placementDone, int shipSize)
         {
             bool canBePlaced = true;
             foreach (var ship in player.Ships)
@@ -249,7 +248,7 @@ namespace Battleships.UserInterface
 
             if (canBePlaced)
             {
-                var ship = new Ship();
+                var ship = new Ship(shipSize);
                 foreach (var item in cordsList)
                 {
                     ship.OccupiedFields.Add(board.Ocean[item.X, item.Y]);

@@ -35,7 +35,7 @@ namespace Battleships.UserInterface
 
         private const int CellWidth = 7;
 
-        public void PrintBoard(Board board, Cursor cursor, Player currentPlayer, Player enemyPlayer)
+        public void PrintBoard(Board board, Player currentPlayer, Cursor cursor = null, Player enemyPlayer = null)
         {
             Console.Clear();
             Console.WriteLine();
@@ -106,7 +106,11 @@ namespace Battleships.UserInterface
             {
                 Console.ForegroundColor = _colors["cellMainForegroundColor"];
                 var square = board.Ocean[row, col];
-                var squareStatus = square.Position.X == cursor.Position.X && square.Position.Y == cursor.Position.Y ? SquareStatuses.Cursor : square.SquareStatus;
+                var squareStatus = square.SquareStatus;
+                if (cursor is not null)
+                {
+                    squareStatus = square.Position.X == cursor.Position.X && square.Position.Y == cursor.Position.Y ? SquareStatuses.Cursor : square.SquareStatus;    
+                }
                 switch (squareStatus)
                 {
                     case SquareStatuses.Cursor:
@@ -119,7 +123,14 @@ namespace Battleships.UserInterface
                         Console.Write(GetIndent(CellWidth));
                         break;
                     case SquareStatuses.Ship:
-                        Console.BackgroundColor = _colors["boardShipCellColor"];
+                        if (enemyPlayer is null)
+                        {
+                            Console.BackgroundColor = _colors["boardShipCellColor"];    
+                        }
+                        else
+                        {
+                            Console.BackgroundColor = _colors["boardEmptyCellColor"];
+                        }
                         Console.Write(GetIndent(CellWidth));
                         break;
                     case SquareStatuses.Hit:
@@ -151,7 +162,11 @@ namespace Battleships.UserInterface
             Console.Write(GetIndent(20));
             Console.ForegroundColor = ConsoleColor.White;
             Dictionary<ShipTypes, int> currentPlayerShipCount = currentPlayer.GetShipCount();
-            Dictionary<ShipTypes, int> enemyPlayerShipCount = enemyPlayer.GetShipCount();
+            Dictionary<ShipTypes, int> enemyPlayerShipCount = new();
+            if (enemyPlayer is not null)
+            {
+                enemyPlayerShipCount = enemyPlayer.GetShipCount();
+            }
             switch (row, printRowNum)
             {
                 case (3, 2):
@@ -167,13 +182,28 @@ namespace Battleships.UserInterface
                     Console.Write($"Submarine: {currentPlayerShipCount[ShipTypes.Submarine]}  Destroyer: {currentPlayerShipCount[ShipTypes.Destroyer]}");
                     break;
                 case (5, 1):
-                    Console.Write($"{enemyPlayer.Name} left ships:");
+                    if (enemyPlayer is not null)
+                    {
+                        Console.Write($"{enemyPlayer.Name} left ships:");
+                    }
                     break;
                 case (5, 2):
-                    Console.Write($"Carrier: {enemyPlayerShipCount[ShipTypes.Carrier]}  Cruiser: {enemyPlayerShipCount[ShipTypes.Cruiser]}  Battleship: {enemyPlayerShipCount[ShipTypes.Battleship]}");
+                    if (enemyPlayer is not null)
+                    {
+                        Console.Write(
+                            $"Carrier: {enemyPlayerShipCount[ShipTypes.Carrier]}  Cruiser: {enemyPlayerShipCount[ShipTypes.Cruiser]}  Battleship: {enemyPlayerShipCount[ShipTypes.Battleship]}");
+                    }
                     break;
                 case (5, 3):
-                    Console.Write($"Submarine: {enemyPlayerShipCount[ShipTypes.Submarine]}  Destroyer: {enemyPlayerShipCount[ShipTypes.Destroyer]}");
+                    if (enemyPlayer is not null)
+                    {
+                        Console.Write(
+                            $"Submarine: {enemyPlayerShipCount[ShipTypes.Submarine]}  Destroyer: {enemyPlayerShipCount[ShipTypes.Destroyer]}");
+                    }
+                    else
+                    {
+                        Console.Write("Press R to rotate ship");
+                    }
                     break;
             }
         }

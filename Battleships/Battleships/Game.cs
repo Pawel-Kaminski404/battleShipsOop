@@ -20,22 +20,28 @@ namespace Battleships
         private Cursor _playerOneCursor = new ();
 
         private Cursor _playerTwoCursor = new ();
+
+        private readonly Display _display;
+
+        private readonly Input _input;
         
 
-        public Game(Player playerOne, Player playerTwo)
+        public Game(Player playerOne, Player playerTwo, Display display, Input input)
         {
             _playerOne = playerOne;
             _playerTwo = playerTwo;
             _currentPlayer = _playerOne;
             _enemyPlayer = _playerTwo;
+            _display = display;
+            _input = input;
         }
 
-        public void Play(Display display, Input input)
+        public void Play()
         {
             SetUpGame();
             while (true)
             {
-                Round(display, input);
+                Round();
             }
         }
 
@@ -49,7 +55,7 @@ namespace Battleships
             BoardFactory boardFactory = new BoardFactory();
             if (player.GetAiShootStrategy() is null)
             {
-                boardFactory.ManualPlacement(board);
+                boardFactory.ManualPlacement(_display, _input, board, player);
             }
             else
             {
@@ -57,26 +63,26 @@ namespace Battleships
             }
         }
 
-        private void Round(Display display, Input input)
+        private void Round()
         {
             bool wasShotSuccessful = false;
             while (!wasShotSuccessful)
             {
                 Board enemyBoard = _currentPlayer == _playerOne ? _playerTwoBoard : _playerOneBoard;
                 Cursor currentPlayerCursor = _currentPlayer == _playerOne ? _playerOneCursor : _playerTwoCursor;
-                var shotCords = GetShotCoordinates(display, input, enemyBoard, currentPlayerCursor);
+                var shotCords = GetShotCoordinates(enemyBoard, currentPlayerCursor);
                 wasShotSuccessful = _currentPlayer.TryShooting(shotCords, enemyBoard);    
             }
             SwapPlayers();
         }
 
-        Coordinates GetShotCoordinates(Display display, Input input, Board enemyBoard, Cursor cursor)
+        Coordinates GetShotCoordinates(Board enemyBoard, Cursor cursor)
         {
             if (_currentPlayer.Name != "Computer")
             {
-                return input.SelectPosition(display, enemyBoard, cursor, _currentPlayer, _enemyPlayer);
+                return _input.SelectPosition(_display, enemyBoard, cursor, _currentPlayer, _enemyPlayer);
             }
-            return _currentPlayer.GetAiShotCoordinates(enemyBoard);Ga
+            return _currentPlayer.GetAiShotCoordinates(enemyBoard);
             
         }
         
@@ -85,7 +91,7 @@ namespace Battleships
             return player.Ships.Count == 0;
         }
 
-        public void SwapPlayers()
+        private void SwapPlayers()
         {
             (_currentPlayer, _enemyPlayer) = (_enemyPlayer, _currentPlayer);
         }

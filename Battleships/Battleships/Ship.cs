@@ -7,9 +7,9 @@ namespace Battleships
     {
         public List<Square> OccupiedFields { get; set; }
 
-        public Ship()
+        public Ship(List<Square> shipList)
         {
-            OccupiedFields = new List<Square>();
+            OccupiedFields = shipList;
         }
     }
 }

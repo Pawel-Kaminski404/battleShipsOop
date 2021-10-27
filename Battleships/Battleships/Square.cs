@@ -7,7 +7,7 @@ namespace Battleships
     {
         public Coordinates Position { get; }
         
-        public Enum SquareStatus { get; set; }
+        public SquareStatuses SquareStatus { get; set; }
 
         public Square(int x, int y)
         {

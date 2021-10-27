@@ -1,41 +1,60 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Battleships.UserInterface;
 
 namespace Battleships.Players
 {
     public class Player
     {
-        private IShootStrategy iShootStrategy = new PlayerShoot();
+        private IShootStrategy _aiShootStrategy;
 
-        public List<Ship> Ships { get; set; } = new List<Ship>();
-
-        public Player(IShootStrategy strategy)
+        public bool TryShooting(Coordinates shotCords, Board enemyBoard)
         {
-            iShootStrategy = strategy;
+            var targetSquare = enemyBoard.Ocean[shotCords.X, shotCords.Y];
+            if (targetSquare.SquareStatus is SquareStatuses.Empty)
+            {
+                targetSquare.SquareStatus = SquareStatuses.Missed;
+                return true;
+            }
+            if (targetSquare.SquareStatus is SquareStatuses.Ship)
+            {
+                targetSquare.SquareStatus = SquareStatuses.Hit;
+                //CheckIfShipDestroyed(enemyBoard, targetSquare);
+                return true;
+            }
+
+            return false;
         }
 
-        public void ChangeShootStrategy()
+        public Coordinates GetAiShotCoordinates(Board board)
         {
-            if (iShootStrategy is PlayerShoot)
-            {
-                iShootStrategy = new EasyAIShoot();
-            }
-            else if (iShootStrategy is EasyAIShoot)
-            {
-                iShootStrategy = new NormalAIShoot();
-            }
-            else if (iShootStrategy is NormalAIShoot)
-            {
-                iShootStrategy = new HardAIShoot();
-            }
-            else if (iShootStrategy is HardAIShoot)
-            {
-                iShootStrategy = new PlayerShoot();
-            }
+            return _aiShootStrategy.GetShotCoordinates(board);
+        }
+        public string Name { get; set; }
+        public List<Ship> Ships { get; set; } = new ();
+
+        public Player(string name, IShootStrategy strategy = null)
+        {
+            Name = name;
+            _aiShootStrategy = strategy;
         }
 
-        public IShootStrategy GetShootStrategy()
+        public Dictionary<ShipTypes, int> GetShipCount()
         {
-            return iShootStrategy;
+            Dictionary<ShipTypes, int> shipCount = new()
+            {
+                {ShipTypes.Carrier, Ships.Any(ship => ship.ShipType == ShipTypes.Carrier) ? 1 : 0},
+                {ShipTypes.Cruiser, Ships.Any(ship => ship.ShipType == ShipTypes.Cruiser) ? 1 : 0},
+                {ShipTypes.Battleship, Ships.Any(ship=>ship.ShipType == ShipTypes.Battleship) ? 1 : 0},
+                {ShipTypes.Submarine, Ships.Any(ship=>ship.ShipType == ShipTypes.Submarine) ? 1 : 0},
+                {ShipTypes.Destroyer, Ships.Any(ship=>ship.ShipType == ShipTypes.Destroyer) ? 1 : 0}
+            };
+            return shipCount;
+        }
+
+        public IShootStrategy GetAiShootStrategy()
+        {
+            return _aiShootStrategy;
         }
     }
 }

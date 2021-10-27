@@ -9,6 +9,7 @@ namespace Battleships.UserInterface
     {
         public void PrintMenu(ref int pointer, string playerOne, string playerTwo)
         {
+            Console.Clear();
             Console.WriteLine(" -- BattleShips Schleswig-Holstein Edition-- ");
             Console.WriteLine(pointer == 0 ? "> Start <" : "  Start  ");
             Console.Write(pointer == 1 ? "> Player 1 < " : "  Player 1   ");
@@ -34,28 +35,26 @@ namespace Battleships.UserInterface
 
         private const int CellWidth = 7;
 
-        public void PrintBoard(Board board, Cursor cursor)
+        public void PrintBoard(Board board, Player currentPlayer, Cursor cursor = null, Player enemyPlayer = null)
         {
+            Console.Clear();
             Console.WriteLine();
             PrintBoardHeader(board.Size);
             for (int row = 0; row < board.Size; row++)
             {
-                PrintGameBoardRow(board, row, false, cursor);
-                PrintGameBoardRow(board, row, true, cursor);
-                PrintGameBoardRow(board, row, false, cursor);
+                PrintGameBoardRow(board, row, cursor, false, 1, currentPlayer, enemyPlayer);
+                PrintGameBoardRow(board, row, cursor, true, 2, currentPlayer, enemyPlayer);
+                PrintGameBoardRow(board, row, cursor, false, 3, currentPlayer, enemyPlayer);
                 PrintHorizontalSeparator();
-                Console.WriteLine();
             }
             PrintHorizontalSeparator();
-            
         }
 
         private void PrintBoardHeader(int boardSize)
         {
             PrintHorizontalSeparator();
-            Console.WriteLine();
-            Console.Write(GetIndent(8));
-            PrintVerticalSeparator(1);
+            Console.Write(GetIndent(CellWidth + 1));
+            PrintVerticalSeparator();
             Console.BackgroundColor = _colors["boardSeparatorColor"];
             Console.ForegroundColor = _colors["borderForegroundColor"];
             for (int i = 0; i < boardSize; i++)
@@ -66,7 +65,7 @@ namespace Battleships.UserInterface
                 Console.Write(GetIndent(3));
             }
 
-            PrintVerticalSeparator(3);
+            PrintVerticalSeparator(4);
             Console.WriteLine();
 
 
@@ -74,11 +73,12 @@ namespace Battleships.UserInterface
 
         private void PrintHorizontalSeparator()
         {
-            const int boardWidth = 94;
-            Console.Write(GetIndent(8));
+            const int boardWidth = 96;
+            Console.Write(GetIndent(CellWidth + 1));
             Console.BackgroundColor = _colors["boardSeparatorColor"];
             Console.Write(GetIndent(boardWidth));
             Console.BackgroundColor = _colors["mainBackgroundColor"];
+            Console.WriteLine();
         }
 
         private void PrintVerticalSeparator(int multiplier = 2)
@@ -88,25 +88,29 @@ namespace Battleships.UserInterface
             Console.BackgroundColor = _colors["mainBackgroundColor"];
         }
 
-        private void PrintGameBoardRow(Board board, int row, bool isRowCountNeeded, Cursor cursor)
+        private void PrintGameBoardRow(Board board, int row, Cursor cursor, bool isRowCountNeeded, int printRowNum, Player currentPlayer, Player enemyPlayer)
         {
-            Console.Write(GetIndent(8));
+            Console.Write(GetIndent(CellWidth + 1));
             Console.BackgroundColor = _colors["boardSeparatorColor"];
             Console.ForegroundColor = _colors["borderForegroundColor"];
             if (isRowCountNeeded)
             {
-                string rowCountString = row < board.Size-1 ? $" {row + 1} " : $"{row + 1} ";
+                string rowCountString = row < board.Size-1 ? $"  {row + 1} " : $" {row + 1} ";
                 Console.Write(rowCountString);    
             }
             else
             {
-                Console.Write(GetIndent(3));
+                Console.Write(GetIndent(4));
             }
             for (int col = 0; col < board.Size; col++)
             {
                 Console.ForegroundColor = _colors["cellMainForegroundColor"];
                 var square = board.Ocean[row, col];
-                var squareStatus = square.Position.X == cursor.Position.X && square.Position.Y == cursor.Position.Y ? SquareStatuses.Cursor : square.SquareStatus;
+                var squareStatus = square.SquareStatus;
+                if (cursor is not null)
+                {
+                    squareStatus = square.Position.X == cursor.Position.X && square.Position.Y == cursor.Position.Y ? SquareStatuses.Cursor : square.SquareStatus;    
+                }
                 switch (squareStatus)
                 {
                     case SquareStatuses.Cursor:
@@ -119,7 +123,14 @@ namespace Battleships.UserInterface
                         Console.Write(GetIndent(CellWidth));
                         break;
                     case SquareStatuses.Ship:
-                        Console.BackgroundColor = _colors["boardShipCellColor"];
+                        if (enemyPlayer is null)
+                        {
+                            Console.BackgroundColor = _colors["boardShipCellColor"];    
+                        }
+                        else
+                        {
+                            Console.BackgroundColor = _colors["boardEmptyCellColor"];
+                        }
                         Console.Write(GetIndent(CellWidth));
                         break;
                     case SquareStatuses.Hit:
@@ -138,10 +149,65 @@ namespace Battleships.UserInterface
                 }
                 PrintVerticalSeparator();
             }
-            PrintVerticalSeparator(1);
+            PrintVerticalSeparator();
+            if (row is 3 or 4 or 5)
+            {
+                PrintGameInfo(row, printRowNum, currentPlayer, enemyPlayer);
+            }
             Console.WriteLine();
         }
-        
+
+        private void PrintGameInfo(int row, int printRowNum, Player currentPlayer, Player enemyPlayer)
+        {
+            Console.Write(GetIndent(20));
+            Console.ForegroundColor = ConsoleColor.White;
+            Dictionary<ShipTypes, int> currentPlayerShipCount = currentPlayer.GetShipCount();
+            Dictionary<ShipTypes, int> enemyPlayerShipCount = new();
+            if (enemyPlayer is not null)
+            {
+                enemyPlayerShipCount = enemyPlayer.GetShipCount();
+            }
+            switch (row, printRowNum)
+            {
+                case (3, 2):
+                    Console.Write($"{currentPlayer.Name} turn");
+                    break;
+                case (4, 1):
+                    Console.Write("Your ships:");
+                    break;
+                case (4, 2):
+                    Console.Write($"Carrier: {currentPlayerShipCount[ShipTypes.Carrier]}  Cruiser: {currentPlayerShipCount[ShipTypes.Cruiser]}  Battleship: {currentPlayerShipCount[ShipTypes.Battleship]}");
+                    break;
+                case (4, 3):
+                    Console.Write($"Submarine: {currentPlayerShipCount[ShipTypes.Submarine]}  Destroyer: {currentPlayerShipCount[ShipTypes.Destroyer]}");
+                    break;
+                case (5, 1):
+                    if (enemyPlayer is not null)
+                    {
+                        Console.Write($"{enemyPlayer.Name} left ships:");
+                    }
+                    break;
+                case (5, 2):
+                    if (enemyPlayer is not null)
+                    {
+                        Console.Write(
+                            $"Carrier: {enemyPlayerShipCount[ShipTypes.Carrier]}  Cruiser: {enemyPlayerShipCount[ShipTypes.Cruiser]}  Battleship: {enemyPlayerShipCount[ShipTypes.Battleship]}");
+                    }
+                    break;
+                case (5, 3):
+                    if (enemyPlayer is not null)
+                    {
+                        Console.Write(
+                            $"Submarine: {enemyPlayerShipCount[ShipTypes.Submarine]}  Destroyer: {enemyPlayerShipCount[ShipTypes.Destroyer]}");
+                    }
+                    else
+                    {
+                        Console.Write("Press R to rotate ship");
+                    }
+                    break;
+            }
+        }
+
         private string GetIndent(int multiplier)
         {
             const string indent = " ";

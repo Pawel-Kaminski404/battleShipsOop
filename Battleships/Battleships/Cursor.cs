@@ -12,22 +12,22 @@ namespace Battleships
 
         public void MoveUp()
         {
-            Position.Y--;
+            Position.X--;
         }
 
         public void MoveDown()
         {
-            Position.Y++;
+            Position.X++;
         }
 
         public void MoveRight()
         {
-            Position.X++;
+            Position.Y++;
         }
 
         public void MoveLeft()
         {
-            Position.X--;
+            Position.Y--;
         }
     }
 }

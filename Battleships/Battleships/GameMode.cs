@@ -1,6 +1,5 @@
 ﻿using System;
 using Battleships.UserInterface;
-using Battleships.Players;
 
 namespace Battleships
 {
@@ -15,8 +14,6 @@ namespace Battleships
             bool rulesAreSet = false;
             while (!rulesAreSet)
             {
-                Console.Clear();
-                display.PrintMenu(ref _pointer, playerOneStrategy, playerTwoStrategy);
                 option = input.SelectMenuOption(display, ref _pointer, playerOneStrategy, playerTwoStrategy);
                 switch (option)
                 {
@@ -32,8 +29,6 @@ namespace Battleships
                     case 3:
                         Environment.Exit(1);
                         break;
-                    default:
-                        break;
                 }
             }
             return (playerOneStrategy, playerTwoStrategy);
@@ -41,26 +36,14 @@ namespace Battleships
 
         private string ChangeShootStrategy(string currentStrategy)
         {
-            if (currentStrategy == "Player")
+            return currentStrategy switch
             {
-                return "Easy AI";
-            }
-            else if (currentStrategy == "Easy AI")
-            {
-                return "Normal AI";
-            }
-            else if (currentStrategy == "Normal AI")
-            {
-                return "Hard AI";
-            }
-            else if (currentStrategy == "Hard AI")
-            {
-                return "Player";
-            }
-            else
-            {
-                return "error";
-            }
+                "Player" => "Easy AI",
+                "Easy AI" => "Normal AI",
+                "Normal AI" => "Hard AI",
+                "Hard AI" => "Player",
+                _ => "error"
+            };
         }
     }
 }

@@ -1,7 +1,9 @@
-﻿namespace Battleships.Players
+﻿using Battleships.UserInterface;
+
+namespace Battleships.Players
 {
     public interface IShootStrategy
-    {
-        void Shoot(Board board);
+    { 
+        Coordinates GetShotCoordinates(Board board);
     }
 }

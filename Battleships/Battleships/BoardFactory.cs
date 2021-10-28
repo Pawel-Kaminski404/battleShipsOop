@@ -50,7 +50,7 @@ namespace Battleships
                     {
                         return null;
                     }
-                    shipList.Add(board.Ocean[cordX, cordY]);
+                    shipList.Add(board.Ocean[cordX - i, cordY]);
 
                 }
                 return shipList;
@@ -65,7 +65,7 @@ namespace Battleships
                         return null;
                     }
 
-                    shipList.Add(board.Ocean[cordX, cordY]);
+                    shipList.Add(board.Ocean[cordX, cordY + i]);
                 }
 
             }

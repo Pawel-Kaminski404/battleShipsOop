@@ -22,6 +22,19 @@ namespace Battleships
             };
         }
 
+        public Ship(int shipSize,List<Square> lista)
+        {
+            OccupiedFields = new List<Square>();
+            OccupiedFields = lista;
+            ShipType = shipSize switch
+            {
+                2 => ShipTypes.Carrier,
+                3 => ShipTypes.Cruiser,
+                4 => ShipTypes.Battleship,
+                5 => ShipTypes.Submarine,
+                6 => ShipTypes.Destroyer,
+            };
+        }
         public void TrySinkingShip(Player enemy)
         {
             if (CheckIfShipDestroyed())

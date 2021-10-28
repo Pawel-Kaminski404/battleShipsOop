@@ -17,10 +17,8 @@ namespace Battleships
 
         public void RandomPlacement(Player player, Board board)
         {
-
-            foreach (ShipType element in (ShipType[])Enum.GetValues(typeof(ShipType)))
+            for (int shipSize = 2; shipSize < 7; shipSize++)
             {
-                int shipSize = Convert.ToInt32(element);
                 List<Square> shipSquares = new List<Square>();
 
                 while (true)
@@ -33,30 +31,34 @@ namespace Battleships
                     }
                 }
                 player.Ships.Add(new Ship(shipSize, shipSquares));
+                Console.WriteLine("shipsize: " + shipSize);
+                Console.WriteLine("square count: " + shipSquares.Count);
+                Console.ReadKey();
             }
-
-
         }
+        
         public List<Square> GetTheShip(int cordX, int cordY, Board board, int shipSize, string direction)
         {
             List<Square> shipList = new List<Square>();
             shipList.Add(board.Ocean[cordX, cordY]);
-
+            
             if (direction == "vertical")
             {
-                for (int i = 0; i < shipSize - 1; i++)
+                for (int i = 1; i < shipSize; i++)
                 {
                     if (!AreShipsAround(cordX - i, cordY, direction, board, i))
                     {
                         return null;
                     }
+                    Console.WriteLine("cordX " + (cordX-i));
+                    Console.ReadKey();
                     shipList.Add(board.Ocean[cordX - i, cordY]);
 
                 }
                 return shipList;
 
             }
-            for (int i = 0; i < shipSize - 1; i++)
+            for (int i = 1; i < shipSize; i++)
             {
                 if (cordY - i >= 0 && cordY - i < board.Size)
                 {

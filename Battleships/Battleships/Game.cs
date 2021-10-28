@@ -68,9 +68,9 @@ namespace Battleships
             else
             {
                 //wyjebać jak naprawicie
-                boardFactory.ManualPlacement(_display, _input, board, player);
+                //boardFactory.ManualPlacement(_display, _input, board, player);
                 // odkomentować jak naprawicie
-                //boardFactory.RandomPlacement(player, board);
+                boardFactory.RandomPlacement(player, board);
             }
         }
 

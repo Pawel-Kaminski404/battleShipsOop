@@ -88,7 +88,7 @@ namespace Battleships
                 }
                 if (!(_currentPlayer.GetAiShootStrategy() == null))
                 {
-                    _display.PrintBoard(enemyBoard, _currentPlayer, enemyPlayer: _enemyPlayer);
+                    _display.PrintBoard(enemyBoard, _currentPlayer);
                     System.Console.ReadKey();
                 }
             }

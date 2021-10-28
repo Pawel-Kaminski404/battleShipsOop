@@ -5,22 +5,28 @@ using System.Collections.Generic;
 namespace Battleships.Players
 {
     public class EasyAiShoot : IShootStrategy
-    { 
-        private readonly List<Square> _squaresList = new List<Square>();
+    {
+        private readonly Stack<Coordinates> _squaresStack = new Stack<Coordinates>();
+        
+        public EasyAiShoot()
+        {
+            List<Coordinates> squaresList = new List<Coordinates>();
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    squaresList.Add(new Coordinates(i, j));
+                }
+            }
+            Shuffle(squaresList);
+            foreach (var coords in squaresList)
+            {
+                _squaresStack.Push(coords);
+            }
+        }
         public Coordinates GetShotCoordinates(Board board)
         {
-            Stack<Square> squaresStack = new Stack<Square>();
-            foreach (Square square in board.Ocean)
-            {
-                _squaresList.Add(square);
-            }
-            Shuffle(_squaresList);
-            foreach (var square in _squaresList)
-            {
-                squaresStack.Push(square);
-            }
-            var squareCoordinates = squaresStack.Pop();
-            return new Coordinates(squareCoordinates.Position.X, squareCoordinates.Position.Y);
+            return _squaresStack.Pop();
         }
         public static void Shuffle<T>(List<T> list)
         {

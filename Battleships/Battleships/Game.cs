@@ -66,7 +66,10 @@ namespace Battleships
             }
             else
             {
-                boardFactory.RandomPlacement(player, board);
+                //wyjebać jak naprawicie
+                boardFactory.ManualPlacement(_display, _input, board, player);
+                // odkomentować jak naprawicie
+                //boardFactory.RandomPlacement(player, board);
             }
         }
 
@@ -82,6 +85,11 @@ namespace Battleships
                 if (CheckIfGameEnds(_enemyPlayer))
                 {
                     return RoundResults.GameOver;
+                }
+                if (!(_currentPlayer.GetAiShootStrategy() == null))
+                {
+                    _display.PrintBoard(enemyBoard, _currentPlayer, enemyPlayer: _enemyPlayer);
+                    System.Console.ReadKey();
                 }
             }
 

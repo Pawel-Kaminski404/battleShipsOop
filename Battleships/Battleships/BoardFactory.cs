@@ -66,6 +66,7 @@ namespace Battleships
                     }
 
                     shipList.Add(board.Ocean[cordX, cordY + i]);
+                    
                 }
 
             }
@@ -99,7 +100,7 @@ namespace Battleships
 
         public bool AreCordsOutsideTheMap(int cordX, int cordY, Board board)
         {
-            return ((cordX >= board.Size || cordX < 0) || (cordY >= board.Size || cordY < 0)) ? true : false;
+            return (cordX >= board.Size || cordX < 0 || cordY >= board.Size || cordY < 0) ? true : false;
         }
 
         public bool AreShipsAround(int cordX, int cordY, string direction, Board board, int i)
@@ -108,27 +109,27 @@ namespace Battleships
             {
                 if (!AreCordsOutsideTheMap(cordX, cordY, board))
                 {
-                    if (!CheckIfEmpty(cordX, cordY, board)) /// góra 
+                    if (CheckIfEmpty(cordX, cordY, board)) /// góra 
                         return false;
                 }
                 if (!AreCordsOutsideTheMap(cordX - 1, cordY, board))
                 {
-                    if (!CheckIfEmpty(cordX - 1, cordY, board)) /// góra 
+                    if (CheckIfEmpty(cordX - 1, cordY, board)) /// góra 
                         return false;
                 }
                 if (!AreCordsOutsideTheMap(cordX, cordY - 1, board) && i == 0)
                 {
-                    if (!CheckIfEmpty(cordX, cordY - 1, board)) // lewa
+                    if (CheckIfEmpty(cordX, cordY - 1, board)) // lewa
                         return false;
                 }
                 if (!AreCordsOutsideTheMap(cordX, cordY + 1, board))
                 {
-                    if (!CheckIfEmpty(cordX, cordY + 1, board)) // prawa
+                    if (CheckIfEmpty(cordX, cordY + 1, board)) // prawa
                         return false;
                 }
                 if (!AreCordsOutsideTheMap(cordX + 1, cordY, board))
                 {
-                    if (!CheckIfEmpty(cordX + 1, cordY, board)) // dół
+                    if (CheckIfEmpty(cordX + 1, cordY, board)) // dół
                         return false;
                 }
                 return true;
@@ -137,27 +138,27 @@ namespace Battleships
             {
                 if (!AreCordsOutsideTheMap(cordX, cordY, board))
                 {
-                    if (!CheckIfEmpty(cordX, cordY, board))
+                    if (CheckIfEmpty(cordX, cordY, board))
                         return false;/// góra 
                 }
                 if (!AreCordsOutsideTheMap(cordX - 1, cordY, board))
                 {
-                    if (!CheckIfEmpty(cordX - 1, cordY, board)) /// góra 
+                    if (CheckIfEmpty(cordX - 1, cordY, board)) /// góra 
                         return false;
                 }
                 if (!AreCordsOutsideTheMap(cordX, cordY - 1, board))
                 {
-                    if (!CheckIfEmpty(cordX, cordY - 1, board)) // lewa
+                    if (CheckIfEmpty(cordX, cordY - 1, board)) // lewa
                         return false;
                 }
                 if (!AreCordsOutsideTheMap(cordX, cordY + 1, board))
                 {
-                    if (!CheckIfEmpty(cordX, cordY + 1, board)) // prawa
+                    if (CheckIfEmpty(cordX, cordY + 1, board)) // prawa
                         return false;
                 }
                 if (!AreCordsOutsideTheMap(cordX + 1, cordY, board) && i == 0)
                 {
-                    if (!CheckIfEmpty(cordX + 1, cordY, board)) // dół
+                    if (CheckIfEmpty(cordX + 1, cordY, board)) // dół
                         return false;
                 }
                 return true;

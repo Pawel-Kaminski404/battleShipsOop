@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Battleships.Players;
 using Battleships.UserInterface;
@@ -11,135 +11,167 @@ namespace Battleships
         {
             for (int shipSize = 2; shipSize < 7; shipSize++)
             {
-                input.PlaceShip(display, board, player, shipSize);    
+                input.PlaceShip(display, board, player, shipSize);
             }
         }
 
         public void RandomPlacement(Player player, Board board)
         {
-            Random random = new Random();
-            foreach (ShipType element in (ShipType[]) Enum.GetValues(typeof(ShipType)))
+            foreach (ShipType element in (ShipType[])Enum.GetValues(typeof(ShipType)))
             {
-                int shipLength = Convert.ToInt32(element);
-                string direction;
+                int shipSize = Convert.ToInt32(element);
                 List<Square> shipSquares = new List<Square>();
-                for (int j = 0; j < shipLength; j++)
+
+                while (true)
                 {
-                    while (true)
+                    (int cordX, int cordY, string direction) = GetRandomLocation(board);
+                    shipSquares = GetTheShip(cordX, cordY, board, shipSize, direction);
+                    if (shipSquares != null)
                     {
-                        int cordX = random.Next(0, board.Size);
-                        int cordY = random.Next(0, board.Size);
-                        int z = random.Next(1, 3);
-                        if (IsEmpty(cordX, cordY, board))
-                        {
-                            if (z == 1)
-                            {
-                                direction = "up";
-                            }
-                            else
-                            {
-                                direction = "right";
-                            }
-
-                            shipSquares = ValidateCollision(cordX, cordY, board, shipLength, direction);
-                            if (shipSquares != null)
-                            {
-                                break;
-                            }
-                        }
+                        break;
                     }
-                    player.Ships.Add(new Ship(shipLength));
-                    
                 }
+                player.Ships.Add(new Ship(shipSize, shipSquares));
             }
-        }
-        public bool IsEmpty(int x, int y, Board board)
-        {
-            return (board.Ocean[x, y].SquareStatus == SquareStatuses.Empty);
-        }
 
-        public List<Square> ValidateCollision(int cordX, int cordY, Board board, int shipSize, string direction)
+
+        }
+        public List<Square> GetTheShip(int cordX, int cordY, Board board, int shipSize, string direction)
         {
             List<Square> shipList = new List<Square>();
-                if (direction == "up")
-                {
-                    for (int i = 0; i < shipSize - 1; i++)
-                    {
-                        if (cordX - i >= 0 && cordX - i < board.Size)
-                        {
-                            if (!IsEmpty(cordX - i, cordY, board)
-                                || !CheckIfShipsAround(cordX - i, cordY, board, direction, i))
-                            {
-                                return null;
-                            }
+            shipList.Add(board.Ocean[cordX, cordY]);
 
-                            shipList.Add(board.Ocean[cordX, cordY]);
-                        }
-                    }
-                    return shipList;
-                }
-
+            if (direction == "vertical")
+            {
                 for (int i = 0; i < shipSize - 1; i++)
                 {
-                    if (cordY - i >= 0 && cordY - i < board.Size)
+                    if (!AreShipsAround(cordX - i, cordY, direction, board, i))
                     {
-                        if (!IsEmpty(cordX, cordY + i, board)
-                            || CheckIfShipsAround(cordX, cordY + i, board, direction, i))
-                        {
-                            return null;
-                        }
-
-                        shipList.Add(board.Ocean[cordX, cordY]);
+                        return null;
                     }
+                    shipList.Add(board.Ocean[cordX, cordY]);
+
                 }
                 return shipList;
+
+            }
+            for (int i = 0; i < shipSize - 1; i++)
+            {
+                if (cordY - i >= 0 && cordY - i < board.Size)
+                {
+                    if (!AreShipsAround(cordX, cordY + i, direction, board, i))
+                    {
+                        return null;
+                    }
+
+                    shipList.Add(board.Ocean[cordX, cordY]);
+                }
+
+            }
+            return shipList;
+
         }
 
-        public bool CheckIfShipsAround(int cordX, int cordY, Board board, string direction, int itemNumber)
+
+        public bool CheckIfEmpty(int cordX, int cordY, Board board)
         {
-            if (direction == "up")
-            {
-                if (itemNumber == 0)
-                {
-                    if (!IsEmpty(cordX + 1,cordY, board))
-                    {
-                        return true;
-                    }
-                }
-                else if (!IsEmpty(cordX, cordY + 1, board)
-                         || !IsEmpty(cordX, cordY - 1, board)
-                         || !IsEmpty(cordX - 1, cordY, board))
-                {
-                    return true;
-                }
+            return board.Ocean[cordX, cordY].SquareStatus == SquareStatuses.Empty;
+        }
 
-                return false;
+
+
+        public (int x, int y, string direction) GetRandomLocation(Board board)
+        {
+            while (true)
+            {
+                Random random = new Random();
+                int x = random.Next(0, board.Size);
+                int y = random.Next(0, board.Size);
+                string direction = (x > y) ? "horizontal" : "vertical";
+                if (CheckIfEmpty(x, y, board))
+                {
+                    return (x, y, direction);
+                }
             }
 
-            if (itemNumber == 0)
+        }
+
+        public bool AreCordsOutsideTheMap(int cordX, int cordY, Board board)
+        {
+            return ((cordX >= board.Size || cordX < 0) || (cordY >= board.Size || cordY < 0)) ? true : false;
+        }
+
+        public bool AreShipsAround(int cordX, int cordY, string direction, Board board, int i)
+        {
+            if (direction == "horizontal")
             {
-                if (board.Ocean[cordX, cordY - 1].SquareStatus != SquareStatuses.Empty)
+                if (!AreCordsOutsideTheMap(cordX, cordY, board))
                 {
-                    return true;
+                    if (!CheckIfEmpty(cordX, cordY, board)) /// góra 
+                        return false;
                 }
-            }
-            else if (!IsEmpty(cordX + 1, cordY, board)
-                     || !IsEmpty(cordX - 1, cordY, board)
-                     || !IsEmpty(cordX, cordY + 1, board))
-            {
+                if (!AreCordsOutsideTheMap(cordX - 1, cordY, board))
+                {
+                    if (!CheckIfEmpty(cordX - 1, cordY, board)) /// góra 
+                        return false;
+                }
+                if (!AreCordsOutsideTheMap(cordX, cordY - 1, board) && i == 0)
+                {
+                    if (!CheckIfEmpty(cordX, cordY - 1, board)) // lewa
+                        return false;
+                }
+                if (!AreCordsOutsideTheMap(cordX, cordY + 1, board))
+                {
+                    if (!CheckIfEmpty(cordX, cordY + 1, board)) // prawa
+                        return false;
+                }
+                if (!AreCordsOutsideTheMap(cordX + 1, cordY, board))
+                {
+                    if (!CheckIfEmpty(cordX + 1, cordY, board)) // dół
+                        return false;
+                }
                 return true;
             }
+            else
+            {
+                if (!AreCordsOutsideTheMap(cordX, cordY, board))
+                {
+                    if (!CheckIfEmpty(cordX, cordY, board))
+                        return false;/// góra 
+                }
+                if (!AreCordsOutsideTheMap(cordX - 1, cordY, board))
+                {
+                    if (!CheckIfEmpty(cordX - 1, cordY, board)) /// góra 
+                        return false;
+                }
+                if (!AreCordsOutsideTheMap(cordX, cordY - 1, board))
+                {
+                    if (!CheckIfEmpty(cordX, cordY - 1, board)) // lewa
+                        return false;
+                }
+                if (!AreCordsOutsideTheMap(cordX, cordY + 1, board))
+                {
+                    if (!CheckIfEmpty(cordX, cordY + 1, board)) // prawa
+                        return false;
+                }
+                if (!AreCordsOutsideTheMap(cordX + 1, cordY, board) && i == 0)
+                {
+                    if (!CheckIfEmpty(cordX + 1, cordY, board)) // dół
+                        return false;
+                }
+                return true;
 
-            return false;
+            }
         }
     }
-
-    public enum ShipType
-    {
-        Carrier = 2,
-        Cruiser,
-        Battleship,
-        Submarine,
-        Destroyer
-    }
 }
+
+public enum ShipType
+{
+    Carrier = 2,
+    Cruiser,
+    Battleship,
+    Submarine,
+    Destroyer
+}
+

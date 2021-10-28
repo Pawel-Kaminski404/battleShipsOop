@@ -229,7 +229,7 @@ namespace Battleships.UserInterface
                         }
                         else
                         {
-                            Console.BackgroundColor = _colors["boardShipCellColor"];
+                            Console.BackgroundColor = _colors["boardEmptyCellColor"];
                         }
                         Console.Write(GetIndent(CellWidth));
                         break;

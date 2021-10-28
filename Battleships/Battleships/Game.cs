@@ -84,7 +84,7 @@ namespace Battleships
                 {
                     if (_currentPlayer.GetAiShootStrategy() != null)
                     {
-                        _display.PrintBoard(enemyBoard, _currentPlayer, shotResult: shotResult);
+                        _display.PrintBoard(enemyBoard, _currentPlayer, enemyPlayer: _enemyPlayer, shotResult: shotResult);
                     }
                     else
                     {
@@ -99,9 +99,8 @@ namespace Battleships
                 }
                 if (_currentPlayer.GetAiShootStrategy() != null)
                 {
-                    _display.PrintBoard(enemyBoard, _currentPlayer);
-                    System.Console.ReadKey();
-                    break;
+                    _display.PrintBoard(enemyBoard, _currentPlayer, enemyPlayer: _enemyPlayer, shotResult: shotResult);
+                    Console.ReadKey();
                 }
             }
             return RoundResults.GameNotOver;

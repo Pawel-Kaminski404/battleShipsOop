@@ -40,11 +40,9 @@ namespace Battleships
         public List<Square> GetTheShip(int cordX, int cordY, Board board, int shipSize, string direction)
         {
             List<Square> shipList = new List<Square>();
-            shipList.Add(board.Ocean[cordX, cordY]);
-            
             if (direction == "vertical")
             {
-                for (int i = 1; i < shipSize; i++)
+                for (int i = 0; i < shipSize; i++)
                 {
                     if (!NoShipsAround(cordX - i, cordY, direction, board, i))
                     {
@@ -56,7 +54,7 @@ namespace Battleships
                 return shipList;
 
             }
-            for (int i = 1; i < shipSize; i++)
+            for (int i = 0; i < shipSize; i++)
             {
                 if (!NoShipsAround(cordX, cordY + i, direction, board, i))
                 {

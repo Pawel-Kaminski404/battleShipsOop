@@ -17,6 +17,7 @@ namespace Battleships
 
         public void RandomPlacement(Player player, Board board)
         {
+
             foreach (ShipType element in (ShipType[])Enum.GetValues(typeof(ShipType)))
             {
                 int shipSize = Convert.ToInt32(element);
@@ -162,6 +163,7 @@ namespace Battleships
                 return true;
 
             }
+
         }
     }
 }

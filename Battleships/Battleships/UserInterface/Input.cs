@@ -21,7 +21,7 @@ namespace Battleships.UserInterface
                         }
                         break;
                     case ConsoleKey.DownArrow:
-                        if (pointer != 3)
+                        if (pointer != 4)
                         {
                             pointer++;
                         }

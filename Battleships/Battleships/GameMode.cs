@@ -27,6 +27,9 @@ namespace Battleships
                         playerTwoStrategy = ChangeShootStrategy(playerTwoStrategy);
                         break;
                     case 3:
+                        display.PrintInstructions();
+                        break;
+                    case 4:
                         Environment.Exit(1);
                         break;
                 }

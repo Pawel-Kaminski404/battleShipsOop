@@ -7,20 +7,13 @@ namespace Battleships.UserInterface
 {
     public class Display
     {
-        public void PrintMenu(ref int pointer, string playerOne, string playerTwo)
-        {
-            Console.Clear();
-            Console.WriteLine(" -- BattleShips Schleswig-Holstein Edition-- ");
-            Console.WriteLine(pointer == 0 ? "> Start <" : "  Start  ");
-            Console.Write(pointer == 1 ? "> Player 1 < " : "  Player 1   ");
-            Console.WriteLine(playerOne);
-            Console.Write(pointer == 2 ? "> Player 2 < " : "  Player 2   ");
-            Console.WriteLine(playerTwo);
-            Console.WriteLine(pointer == 3 ? "> Exit <" : "  Exit  ");
-        }
+        private const int CellWidth = 7;
 
+        private int _windowWidth = Console.WindowWidth;
+        
         private readonly Dictionary<string, ConsoleColor> _colors = new()
         {
+            {"menuForeground", ConsoleColor.White},
             {"mainBackgroundColor", ConsoleColor.Black},
             {"boardEmptyCellColor", ConsoleColor.White},
             {"boardShipCellColor", ConsoleColor.DarkGreen},
@@ -32,9 +25,113 @@ namespace Battleships.UserInterface
             {"cellMissedForegroundColor", ConsoleColor.DarkCyan},
             {"cellCursorColor", ConsoleColor.DarkYellow}
         };
+        
+        public void PrintMenu(ref int pointer, string playerOne, string playerTwo)
+        {
+            Console.Clear();
+            Console.ForegroundColor = _colors["menuForeground"];
+            Console.BackgroundColor = _colors["mainBackgroundColor"];
+            Console.WriteLine(GetNewLines(6));
+            Console.WriteLine(GetCenteredText("-- BattleShips Schleswig-Holstein Edition --"));
+            Console.WriteLine(GetNewLines(2));
+            Console.WriteLine(GetCenteredText(pointer == 0 ? "> Start <" : "  Start  ",1));
+            Console.WriteLine();
+            Console.Write(GetCenteredText(pointer == 1 ? "> Player 1 : " : "  Player 1 : ", 5));
+            Console.WriteLine(playerOne);
+            Console.Write(GetCenteredText(pointer == 2 ? "> Player 2 : " : "  Player 2 : ", 5));
+            Console.WriteLine(playerTwo);
+            Console.WriteLine();
+            Console.WriteLine(GetCenteredText(pointer == 3 ? "> Instructions <" : "  Instructions  ", 1));
+            Console.WriteLine();
+            Console.WriteLine(GetCenteredText(pointer == 4 ? "> Exit <" : "  Exit  ", 1));
+        }
 
-        private const int CellWidth = 7;
-
+        public void PrintInstructions()
+        {
+            Console.Clear();
+            Console.WriteLine(GetNewLines(2));
+            Console.WriteLine(GetCenteredText("Game instructions"));
+            Console.WriteLine(GetNewLines(2));
+            Console.Write(GetIndent(6) + "1. Select game mode by choosing type of player for each of the players");
+            Console.WriteLine(GetIndent(50) + "Ship types:");
+            Console.WriteLine();
+            Console.Write(GetIndent(10) + "Possible player types:");
+            Console.WriteLine(GetIndent(90) + "Carrier - size: 2");
+            Console.WriteLine();
+            Console.Write(GetIndent(15) + "- Player");
+            Console.WriteLine(GetIndent(99) + "Cruiser - size: 3");
+            Console.WriteLine();
+            Console.Write(GetIndent(15) + "- Easy AI");
+            Console.WriteLine(GetIndent(98) + "Battleship - size: 4");
+            Console.WriteLine();
+            Console.Write(GetIndent(15) + "- Normal AI");
+            Console.WriteLine(GetIndent(96) + "Submarine - size: 5");
+            Console.WriteLine();
+            Console.Write(GetIndent(15) + "- Hard AI");
+            Console.WriteLine(GetIndent(98) + "Destroyer - size: 6");
+            Console.WriteLine(GetNewLines());
+            Console.Write(GetIndent(6) + "2. Start the game by selecting > Start <");
+            Console.WriteLine(GetIndent(79) + "Board legend:");
+            Console.WriteLine();
+            Console.Write(GetIndent(135));
+            Console.BackgroundColor = _colors["cellMissedForegroundColor"];
+            Console.ForegroundColor = _colors["boardSeparatorColor"];
+            Console.WriteLine("██   ██");
+            Console.BackgroundColor = _colors["mainBackgroundColor"];
+            Console.ForegroundColor = _colors["menuForeground"];
+            
+            Console.Write(GetIndent(6) + "3. Each of the players place their ships");
+            Console.Write(GetIndent(75) + "Shot missed:  ");
+            Console.BackgroundColor = _colors["cellMissedForegroundColor"];
+            Console.ForegroundColor = _colors["boardSeparatorColor"];
+            Console.WriteLine("  ███  ");
+            Console.BackgroundColor = _colors["mainBackgroundColor"];
+            Console.ForegroundColor = _colors["menuForeground"];
+            Console.Write(GetIndent(135));
+            Console.BackgroundColor = _colors["cellMissedForegroundColor"];
+            Console.ForegroundColor = _colors["boardSeparatorColor"];
+            Console.WriteLine("██   ██");
+            Console.BackgroundColor = _colors["mainBackgroundColor"];
+            Console.ForegroundColor = _colors["menuForeground"];
+            Console.WriteLine(GetIndent(10) + "Use arrow keys to move ships on board");
+            Console.Write(GetIndent(135));
+            Console.BackgroundColor = _colors["boardHitCellColor"];
+            Console.WriteLine("       ");
+            Console.BackgroundColor = _colors["mainBackgroundColor"];
+            Console.Write(GetIndent(10) + "Use r key to rotate the ships");
+            Console.Write(GetIndent(82) + "Ship hit:     ");
+            Console.BackgroundColor = _colors["boardHitCellColor"];
+            Console.WriteLine("       ");
+            Console.BackgroundColor = _colors["mainBackgroundColor"];
+            Console.Write(GetIndent(135));
+            Console.BackgroundColor = _colors["boardHitCellColor"];
+            Console.WriteLine("       ");
+            Console.BackgroundColor = _colors["mainBackgroundColor"];
+            Console.WriteLine(GetIndent(10) + "Use enter key to place the ship");
+            Console.Write(GetIndent(135));
+            Console.BackgroundColor = _colors["boardSunkCellColor"];
+            Console.WriteLine("       ");
+            Console.BackgroundColor = _colors["mainBackgroundColor"];
+            Console.Write(GetIndent(121) + "Sunken ship:  ");
+            Console.BackgroundColor = _colors["boardSunkCellColor"];
+            Console.WriteLine("       ");
+            Console.BackgroundColor = _colors["mainBackgroundColor"];
+            Console.Write(GetIndent(6) + "4. Players try to shoot enemy ships");
+            Console.Write(GetIndent(94));
+            Console.BackgroundColor = _colors["boardSunkCellColor"];
+            Console.WriteLine("       ");
+            Console.BackgroundColor = _colors["mainBackgroundColor"];
+            Console.WriteLine();
+            Console.WriteLine(GetIndent(10) + "Use arrow keys to move the cursor on board");
+            Console.WriteLine();
+            Console.WriteLine(GetIndent(10) + "Use enter key to shoot");
+            Console.WriteLine(GetNewLines());
+            Console.WriteLine(GetIndent(6) + "5. First player to destroy all of the enemy ships wins");
+            Console.WriteLine(GetNewLines());
+            Console.WriteLine(GetCenteredText("Press any key to go back"));
+            Console.ReadKey();
+        }
+        
         public void PrintBoard(Board board, Player currentPlayer, Cursor cursor = null, Player enemyPlayer = null)
         {
             Console.Clear();
@@ -219,6 +316,19 @@ namespace Battleships.UserInterface
         {
             const string indent = " ";
             return string.Concat(Enumerable.Repeat(indent, multiplier));
+        }
+
+        private string GetNewLines(int multiplier = 1)
+        {
+            const string newLine = "\n";
+            return string.Concat(Enumerable.Repeat(newLine, multiplier));
+        }
+        
+        private string GetCenteredText(string text, int additionalSpace = 0)
+        {
+            int textLength = text.Length;
+            int indentLength = (_windowWidth / 2) - (textLength / 2) - additionalSpace;
+            return $"{GetIndent(indentLength)}{text}";
         }
     }
 }

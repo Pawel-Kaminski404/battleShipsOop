@@ -1,4 +1,5 @@
-﻿using Battleships.Players;
+﻿using System;
+using Battleships.Players;
 using Battleships.UserInterface;
 
 namespace Battleships
@@ -75,13 +76,19 @@ namespace Battleships
 
         private RoundResults Round()
         {
-            bool wasShotSuccessful = false;
-            while (!wasShotSuccessful)
+            RoundResults shotResult = RoundResults.WrongShot;
+            while (true)
             {
                 Board enemyBoard = _currentPlayer == _playerOne ? _playerTwoBoard : _playerOneBoard;
                 Cursor currentPlayerCursor = _currentPlayer == _playerOne ? _playerOneCursor : _playerTwoCursor;
-                var shotCords = GetShotCoordinates(enemyBoard, currentPlayerCursor);
-                wasShotSuccessful = _currentPlayer.TryShooting(shotCords, enemyBoard, _enemyPlayer);
+                var shotCords = GetShotCoordinates(enemyBoard, currentPlayerCursor, shotResult);
+                shotResult = _currentPlayer.TryShooting(shotCords, enemyBoard, _enemyPlayer);
+                if (shotResult == RoundResults.ShipMissed)
+                {
+                    _display.PrintBoard(enemyBoard, _currentPlayer, enemyPlayer: _enemyPlayer, shotResult:shotResult);
+                    Console.ReadKey();
+                    break;
+                }
                 if (CheckIfGameEnds(_enemyPlayer))
                 {
                     return RoundResults.GameOver;
@@ -90,17 +97,17 @@ namespace Battleships
                 {
                     _display.PrintBoard(enemyBoard, _currentPlayer);
                     System.Console.ReadKey();
+                    break;
                 }
             }
-
             return RoundResults.GameNotOver;
         }
 
-        Coordinates GetShotCoordinates(Board enemyBoard, Cursor cursor)
+        Coordinates GetShotCoordinates(Board enemyBoard, Cursor cursor, RoundResults shotResult)
         {
             if (_currentPlayer.Name != "Computer")
             {
-                return _input.SelectPosition(_display, enemyBoard, cursor, _currentPlayer, _enemyPlayer);
+                return _input.SelectPosition(_display, enemyBoard, cursor, _currentPlayer, _enemyPlayer, shotResult);
             }
             return _currentPlayer.GetAiShotCoordinates(enemyBoard);
             
@@ -117,9 +124,13 @@ namespace Battleships
         }
     }
 
-    enum RoundResults
+    public enum RoundResults
     {
         GameOver,
-        GameNotOver
+        GameNotOver,
+        ShipMissed,
+        ShipHit,
+        ShipSunk,
+        WrongShot
     }
 }

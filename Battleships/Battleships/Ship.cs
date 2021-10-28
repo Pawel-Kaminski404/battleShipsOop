@@ -35,12 +35,15 @@ namespace Battleships
                 6 => ShipTypes.Destroyer,
             };
         }
-        public void TrySinkingShip(Player enemy)
+        public bool TrySinkingShip(Player enemy)
         {
             if (CheckIfShipDestroyed())
             {
                 SunkShip(enemy);
+                return true;
             }
+
+            return false;
         }
 
         private bool CheckIfShipDestroyed()

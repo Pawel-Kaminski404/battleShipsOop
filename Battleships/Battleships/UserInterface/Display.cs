@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Battleships.Players;
 
@@ -132,16 +133,17 @@ namespace Battleships.UserInterface
             Console.ReadKey();
         }
         
-        public void PrintBoard(Board board, Player currentPlayer, Cursor cursor = null, Player enemyPlayer = null)
+        public void PrintBoard(Board board, Player currentPlayer, Cursor cursor = null, 
+            Player enemyPlayer = null, RoundResults shotResult = RoundResults.WrongShot)
         {
             Console.Clear();
             Console.WriteLine();
             PrintBoardHeader(board.Size);
             for (int row = 0; row < board.Size; row++)
             {
-                PrintGameBoardRow(board, row, cursor, false, 1, currentPlayer, enemyPlayer);
-                PrintGameBoardRow(board, row, cursor, true, 2, currentPlayer, enemyPlayer);
-                PrintGameBoardRow(board, row, cursor, false, 3, currentPlayer, enemyPlayer);
+                PrintGameBoardRow(board, row, cursor, false, 1, currentPlayer, enemyPlayer, shotResult);
+                PrintGameBoardRow(board, row, cursor, true, 2, currentPlayer, enemyPlayer, shotResult);
+                PrintGameBoardRow(board, row, cursor, false, 3, currentPlayer, enemyPlayer, shotResult);
                 PrintHorizontalSeparator();
             }
             PrintHorizontalSeparator();
@@ -185,7 +187,8 @@ namespace Battleships.UserInterface
             Console.BackgroundColor = _colors["mainBackgroundColor"];
         }
 
-        private void PrintGameBoardRow(Board board, int row, Cursor cursor, bool isRowCountNeeded, int printRowNum, Player currentPlayer, Player enemyPlayer)
+        private void PrintGameBoardRow(Board board, int row, Cursor cursor, bool isRowCountNeeded, int printRowNum, 
+            Player currentPlayer, Player enemyPlayer, RoundResults shotResult)
         {
             Console.Write(GetIndent(CellWidth + 1));
             Console.BackgroundColor = _colors["boardSeparatorColor"];
@@ -247,14 +250,15 @@ namespace Battleships.UserInterface
                 PrintVerticalSeparator();
             }
             PrintVerticalSeparator();
-            if (row is 3 or 4 or 5)
+            if (row is 2 or 3 or 4 or 5)
             {
-                PrintGameInfo(row, printRowNum, currentPlayer, enemyPlayer);
+                PrintGameInfo(row, printRowNum, currentPlayer, enemyPlayer, shotResult);
             }
             Console.WriteLine();
         }
 
-        private void PrintGameInfo(int row, int printRowNum, Player currentPlayer, Player enemyPlayer)
+        private void PrintGameInfo(int row, int printRowNum, Player currentPlayer, 
+            Player enemyPlayer, RoundResults shotResult)
         {
             Console.Write(GetIndent(20));
             Console.ForegroundColor = ConsoleColor.White;
@@ -266,8 +270,40 @@ namespace Battleships.UserInterface
             }
             switch (row, printRowNum)
             {
+                case (2, 1):
+                    if (enemyPlayer is not null)
+                    {
+                        switch (shotResult)
+                        {
+                            case RoundResults.ShipMissed:
+                                Console.Write("SHOT MISSED");
+                                break;
+                            case RoundResults.ShipHit:
+                                Console.Write("IT'S A HIT");
+                                break;
+                            case RoundResults.ShipSunk:
+                                Console.Write("YOU'VE DESTROYED THE SHIP");
+                                break;
+                        }
+                    }
+                    break;
+                case (2, 3):
+                {
+                    if (shotResult == RoundResults.ShipMissed)
+                    {
+                        Console.Write("Press any button to continue...");
+                    }
+                    break;
+                }
                 case (3, 2):
-                    Console.Write($"{currentPlayer.Name} turn");
+                    if (enemyPlayer is not null)
+                    {
+                        Console.Write($"{currentPlayer.Name} turn to shoot");
+                    }
+                    else
+                    {
+                        Console.Write($"{currentPlayer.Name} turn to place ships");
+                    }
                     break;
                 case (4, 1):
                     Console.Write("Your ships:");

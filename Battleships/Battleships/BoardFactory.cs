@@ -31,9 +31,10 @@ namespace Battleships
                     }
                 }
                 player.Ships.Add(new Ship(shipSize, shipSquares));
-                Console.WriteLine("shipsize: " + shipSize);
-                Console.WriteLine("square count: " + shipSquares.Count);
-                Console.ReadKey();
+                foreach (var square in shipSquares)
+                {
+                    square.SquareStatus = SquareStatuses.Ship;
+                }
             }
         }
         
@@ -50,8 +51,6 @@ namespace Battleships
                     {
                         return null;
                     }
-                    Console.WriteLine("cordX " + (cordX-i));
-                    Console.ReadKey();
                     shipList.Add(board.Ocean[cordX - i, cordY]);
 
                 }
@@ -60,29 +59,22 @@ namespace Battleships
             }
             for (int i = 1; i < shipSize; i++)
             {
-                if (cordY - i >= 0 && cordY - i < board.Size)
+                if (!AreShipsAround(cordX, cordY + i, direction, board, i))
                 {
-                    if (!AreShipsAround(cordX, cordY + i, direction, board, i))
-                    {
-                        return null;
-                    }
-
-                    shipList.Add(board.Ocean[cordX, cordY + i]);
+                    return null;
                 }
 
+                shipList.Add(board.Ocean[cordX, cordY + i]);
             }
             return shipList;
 
         }
-
-
+        
         public bool CheckIfEmpty(int cordX, int cordY, Board board)
         {
             return board.Ocean[cordX, cordY].SquareStatus == SquareStatuses.Empty;
         }
-
-
-
+        
         public (int x, int y, string direction) GetRandomLocation(Board board)
         {
             while (true)
@@ -96,76 +88,70 @@ namespace Battleships
                     return (x, y, direction);
                 }
             }
-
         }
-
         public bool AreCordsOutsideTheMap(int cordX, int cordY, Board board)
         {
-            return ((cordX >= board.Size || cordX < 0) || (cordY >= board.Size || cordY < 0)) ? true : false;
+            return (cordX >= board.Size || cordX < 0 || cordY >= board.Size || cordY < 0) ? true : false;
         }
 
         public bool AreShipsAround(int cordX, int cordY, string direction, Board board, int i)
         {
+            
             if (direction == "horizontal")
             {
-                if (!AreCordsOutsideTheMap(cordX, cordY, board))
+                if (AreCordsOutsideTheMap(cordX, cordY, board) 
+                    || !CheckIfEmpty(cordX, cordY, board))
                 {
-                    if (!CheckIfEmpty(cordX, cordY, board)) /// góra 
-                        return false;
+                    return false;
                 }
-                if (!AreCordsOutsideTheMap(cordX - 1, cordY, board))
+                if (AreCordsOutsideTheMap(cordX - 1, cordY, board)
+                    || !CheckIfEmpty(cordX - 1, cordY, board))
                 {
-                    if (!CheckIfEmpty(cordX - 1, cordY, board)) /// góra 
-                        return false;
+                    return false;
                 }
-                if (!AreCordsOutsideTheMap(cordX, cordY - 1, board) && i == 0)
+                if ((AreCordsOutsideTheMap(cordX, cordY - 1, board) && i == 0) 
+                    || !CheckIfEmpty(cordX, cordY - 1, board) && i == 0)
                 {
-                    if (!CheckIfEmpty(cordX, cordY - 1, board)) // lewa
-                        return false;
+                    return false;
                 }
-                if (!AreCordsOutsideTheMap(cordX, cordY + 1, board))
+                if (AreCordsOutsideTheMap(cordX, cordY + 1, board)
+                    || !CheckIfEmpty(cordX, cordY + 1, board))
                 {
-                    if (!CheckIfEmpty(cordX, cordY + 1, board)) // prawa
-                        return false;
+                    return false;
                 }
-                if (!AreCordsOutsideTheMap(cordX + 1, cordY, board))
+                if (AreCordsOutsideTheMap(cordX + 1, cordY, board) 
+                    || !CheckIfEmpty(cordX + 1, cordY, board))
                 {
-                    if (!CheckIfEmpty(cordX + 1, cordY, board)) // dół
-                        return false;
+                    return false;
                 }
                 return true;
             }
-            else
+            if (AreCordsOutsideTheMap(cordX, cordY, board)
+                || !CheckIfEmpty(cordX, cordY, board))
             {
-                if (!AreCordsOutsideTheMap(cordX, cordY, board))
-                {
-                    if (!CheckIfEmpty(cordX, cordY, board))
-                        return false;/// góra 
-                }
-                if (!AreCordsOutsideTheMap(cordX - 1, cordY, board))
-                {
-                    if (!CheckIfEmpty(cordX - 1, cordY, board)) /// góra 
-                        return false;
-                }
-                if (!AreCordsOutsideTheMap(cordX, cordY - 1, board))
-                {
-                    if (!CheckIfEmpty(cordX, cordY - 1, board)) // lewa
-                        return false;
-                }
-                if (!AreCordsOutsideTheMap(cordX, cordY + 1, board))
-                {
-                    if (!CheckIfEmpty(cordX, cordY + 1, board)) // prawa
-                        return false;
-                }
-                if (!AreCordsOutsideTheMap(cordX + 1, cordY, board) && i == 0)
-                {
-                    if (!CheckIfEmpty(cordX + 1, cordY, board)) // dół
-                        return false;
-                }
-                return true;
-
+                return false;
             }
-
+            if (AreCordsOutsideTheMap(cordX - 1, cordY, board)
+                || !CheckIfEmpty(cordX - 1, cordY, board))
+            {
+                return false;
+            }
+            if (AreCordsOutsideTheMap(cordX, cordY - 1, board)
+                || !CheckIfEmpty(cordX, cordY - 1, board))
+            {
+                return false;
+            }
+            if (AreCordsOutsideTheMap(cordX, cordY + 1, board)
+                || !CheckIfEmpty(cordX, cordY + 1, board))
+            {
+                return false;
+            }
+            if ((AreCordsOutsideTheMap(cordX + 1, cordY, board) && i == 0)
+                || !CheckIfEmpty(cordX + 1, cordY, board) && i == 0)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

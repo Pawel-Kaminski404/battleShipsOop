@@ -16,22 +16,22 @@ namespace Battleships.Players
             _aiShootStrategy = strategy;
         }
 
-        public bool TryShooting(Coordinates shotCords, Board enemyBoard, Player enemy)
+        public RoundResults TryShooting(Coordinates shotCords, Board enemyBoard, Player enemy)
         {
             var targetSquare = enemyBoard.Ocean[shotCords.X, shotCords.Y];
             if (targetSquare.SquareStatus is SquareStatuses.Empty)
             {
                 targetSquare.SquareStatus = SquareStatuses.Missed;
-                return true;
+                return RoundResults.ShipMissed;
             }
             if (targetSquare.SquareStatus is SquareStatuses.Ship)
             {
                 targetSquare.SquareStatus = SquareStatuses.Hit;
                 var enemyShip = enemy.Ships.Find(ship => ship.OccupiedFields.Contains(targetSquare));
-                if (enemyShip != null) enemyShip.TrySinkingShip(enemy);
-                return false;
+                bool wasDestroyed = enemyShip.TrySinkingShip(enemy);
+                return wasDestroyed ? RoundResults.ShipSunk : RoundResults.ShipHit;
             }
-            return false;
+            return RoundResults.WrongShot;
         }
 
         public Coordinates GetAiShotCoordinates(Board board)

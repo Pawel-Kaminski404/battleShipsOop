@@ -32,11 +32,11 @@ namespace Battleships.UserInterface
             }
         }
 
-        public Coordinates SelectPosition(Display display, Board board, Cursor cursor, Player currentPlayer, Player enemyPlayer)
+        public Coordinates SelectPosition(Display display, Board board, Cursor cursor, Player currentPlayer, Player enemyPlayer, RoundResults shotResult)
         {
             while (true)
             {
-                display.PrintBoard(board, currentPlayer, cursor, enemyPlayer);
+                display.PrintBoard(board, currentPlayer, cursor, enemyPlayer, shotResult);
                 var pressedKey = Console.ReadKey().Key;
                 switch (pressedKey)
                 {

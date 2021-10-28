@@ -93,7 +93,7 @@ namespace Battleships
                 {
                     return RoundResults.GameOver;
                 }
-                if (!(_currentPlayer.GetAiShootStrategy() == null))
+                if (_currentPlayer.GetAiShootStrategy() != null)
                 {
                     _display.PrintBoard(enemyBoard, _currentPlayer);
                     System.Console.ReadKey();

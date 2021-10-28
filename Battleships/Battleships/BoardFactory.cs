@@ -9,7 +9,7 @@ namespace Battleships
     {
         public void ManualPlacement(Display display, Input input, Board board, Player player)
         {
-            for (int shipSize = 2; shipSize < 3; shipSize++)
+            for (int shipSize = 2; shipSize < 7; shipSize++)
             {
                 input.PlaceShip(display, board, player, shipSize);
             }

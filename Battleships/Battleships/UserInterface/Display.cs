@@ -343,10 +343,18 @@ namespace Battleships.UserInterface
 
         public void PrintGameResult(Player winner)
         {
-            //to do
             Console.Clear();
-            Console.WriteLine($"{winner.Name} won!");
+            Console.ForegroundColor = _colors["menuForeground"];
+            Console.BackgroundColor = _colors["mainBackgroundColor"];
+            Console.WriteLine(GetNewLines(6));
+            Console.WriteLine(GetCenteredText($"{winner.Name} won the game!"));
+            Console.WriteLine(GetNewLines());
+            Console.WriteLine(GetCenteredText("Congratulations!"));
+            Console.WriteLine(GetNewLines(2));
+            Console.WriteLine(GetCenteredText("Press any button to go back to the Main Menu"));
+
             Console.ReadKey();
+
         }
         private string GetIndent(int multiplier)
         {

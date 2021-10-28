@@ -41,8 +41,15 @@ namespace Battleships
             SetUpGame();
             while (true)
             {
-                Round();
+                var roundResult = Round();
+                if (roundResult == RoundResults.GameOver)
+                {
+                    break;
+                }
+                SwapPlayers();
             }
+
+            _display.PrintGameResult(_currentPlayer);
         }
 
         private void SetUpGame()
@@ -63,7 +70,7 @@ namespace Battleships
             }
         }
 
-        private void Round()
+        private RoundResults Round()
         {
             bool wasShotSuccessful = false;
             while (!wasShotSuccessful)
@@ -71,9 +78,14 @@ namespace Battleships
                 Board enemyBoard = _currentPlayer == _playerOne ? _playerTwoBoard : _playerOneBoard;
                 Cursor currentPlayerCursor = _currentPlayer == _playerOne ? _playerOneCursor : _playerTwoCursor;
                 var shotCords = GetShotCoordinates(enemyBoard, currentPlayerCursor);
-                wasShotSuccessful = _currentPlayer.TryShooting(shotCords, enemyBoard);    
+                wasShotSuccessful = _currentPlayer.TryShooting(shotCords, enemyBoard, _enemyPlayer);
+                if (CheckIfGameEnds(_enemyPlayer))
+                {
+                    return RoundResults.GameOver;
+                }
             }
-            SwapPlayers();
+
+            return RoundResults.GameNotOver;
         }
 
         Coordinates GetShotCoordinates(Board enemyBoard, Cursor cursor)
@@ -95,5 +107,11 @@ namespace Battleships
         {
             (_currentPlayer, _enemyPlayer) = (_enemyPlayer, _currentPlayer);
         }
+    }
+
+    enum RoundResults
+    {
+        GameOver,
+        GameNotOver
     }
 }

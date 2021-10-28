@@ -85,7 +85,14 @@ namespace Battleships
                 shotResult = _currentPlayer.TryShooting(shotCords, enemyBoard, _enemyPlayer);
                 if (shotResult == RoundResults.ShipMissed)
                 {
-                    _display.PrintBoard(enemyBoard, _currentPlayer, enemyPlayer: _enemyPlayer, shotResult:shotResult);
+                    if (_currentPlayer.GetAiShootStrategy() != null)
+                    {
+                        _display.PrintBoard(enemyBoard, _currentPlayer, shotResult: shotResult);
+                    }
+                    else
+                    {
+                        _display.PrintBoard(enemyBoard, _currentPlayer, enemyPlayer: _enemyPlayer, shotResult: shotResult);
+                    }
                     Console.ReadKey();
                     break;
                 }

@@ -1,5 +1,10 @@
 # Battleship OOP
 
+## Setup
+
+- just run exe file and enjoy :)
+- you might want to expand your console window to see things properly
+
 ## Story
 
 > One of the reasons microcomputers progressed so fast is people are willing to
